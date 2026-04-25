@@ -1,0 +1,3 @@
+inherit_gem:
+  standard: config/base.yml
+  standard-rails: config/base.yml
