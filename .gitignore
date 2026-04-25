@@ -29,3 +29,15 @@
 !/tmp/storage/.keep
 
 /public/assets
+
+# Ignore Rails master key — NEVER commit this file.
+# In production, set the RAILS_MASTER_KEY environment variable instead.
+/config/master.key
+
+# Ignore SQLite databases.
+/db/*.sqlite3
+/db/*.sqlite3-*
+
+# Ignore key files for decrypting credentials and more.
+/config/*.key
+
