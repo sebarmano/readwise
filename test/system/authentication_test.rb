@@ -2,10 +2,12 @@ require "application_system_test_case"
 
 class AuthenticationTest < ApplicationSystemTestCase
   test "user can sign in with valid credentials" do
-    sign_in_as users(:one)
+    user = create_user
 
-    assert_text "ReadWise"
+    sign_in_as user
+
     assert_current_path root_path
+    assert_text "ReadWise"
   end
 
   test "user sees error with invalid credentials" do

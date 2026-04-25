@@ -1,23 +1,28 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
+beloved:
   user: one
-  title: MyString
-  author: MyString
-  year: 1
-  genre: MyString
-  rating: 1
-  notes: MyText
-  cover_url: MyString
-  read_at: 2026-04-25
+  title: Beloved
+  author: Toni Morrison
+  year: 1987
+  genre: Fiction
+  rating: loved
+  notes: Haunting and powerful
+  read_at: 2025-01-10
 
-two:
+meh_book:
+  user: one
+  title: The Alchemist
+  author: Paulo Coelho
+  year: 1988
+  genre: Fiction
+  rating: meh
+  notes: Overhyped
+  read_at: 2025-03-01
+
+other_users_book:
   user: two
-  title: MyString
-  author: MyString
-  year: 1
-  genre: MyString
-  rating: 1
-  notes: MyText
-  cover_url: MyString
-  read_at: 2026-04-25
+  title: Dune
+  author: Frank Herbert
+  year: 1965
+  genre: Sci-Fi
+  rating: loved
+  read_at: 2024-12-01

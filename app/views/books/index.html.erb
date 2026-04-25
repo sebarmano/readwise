@@ -1,0 +1,41 @@
+<div class="page-header">
+  <div>
+    <h2 class="page-title">Library</h2>
+    <p class="page-sub"><%= pluralize(@total, "book") %> read</p>
+  </div>
+  <div class="header-actions">
+    <%= link_to "Add book", new_book_path, class: "btn btn--primary" %>
+    <div class="search-wrap">
+      <%= form_with url: books_path, method: :get do |f| %>
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <%= f.search_field :q, value: params[:q], placeholder: "Search books, authors…", class: "search-input", id: "Search" %>
+        <%= f.hidden_field :rating, value: params[:rating] %>
+        <%= f.hidden_field :genre, value: params[:genre] %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <div class="filter-group">
+    <%= link_to "All",   books_path(q: params[:q], genre: params[:genre]),                    class: rating_chip_class(nil) %>
+    <%= link_to "Loved", books_path(q: params[:q], genre: params[:genre], rating: "loved"),   class: rating_chip_class(:loved) %>
+    <%= link_to "Liked", books_path(q: params[:q], genre: params[:genre], rating: "liked"),   class: rating_chip_class(:liked) %>
+    <%= link_to "Meh",   books_path(q: params[:q], genre: params[:genre], rating: "meh"),     class: rating_chip_class(:meh) %>
+  </div>
+  <div class="filter-group">
+    <% @genres.each do |genre| %>
+      <%= link_to genre, books_path(q: params[:q], rating: params[:rating], genre: genre), class: genre_chip_class(genre) %>
+    <% end %>
+  </div>
+</div>
+
+<div class="book-grid" id="book-grid">
+  <% if @books.any? %>
+    <% @books.each do |book| %>
+      <%= render "book_card", book: book %>
+    <% end %>
+  <% else %>
+    <p class="empty-state">No books found.</p>
+  <% end %>
+</div>

@@ -1,0 +1,18 @@
+<%# locals: (book:) %>
+<article class="book-card <%= book.rating %>">
+  <div class="book-card__header">
+    <span class="rating-dot rating-dot--<%= book.rating %>"></span>
+    <span class="book-year"><%= book.year %></span>
+  </div>
+  <h3 class="book-title"><%= link_to book.title, book_path(book) %></h3>
+  <p class="book-author"><%= book.author %></p>
+  <% if book.genre.present? %>
+    <div class="book-tags">
+      <span class="tag"><%= book.genre %></span>
+    </div>
+  <% end %>
+  <div class="book-card__actions">
+    <%= link_to "Edit", edit_book_path(book), class: "book-action" %>
+    <%= button_to "Delete book", book_path(book), method: :delete, class: "book-action book-action--danger", form: {data: {turbo_confirm: "Remove #{book.title} from your library?"}} %>
+  </div>
+</article>

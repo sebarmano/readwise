@@ -1,29 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title><%= content_for(:title) || "Readwise" %></title>
+    <title><%= content_for(:title) || "ReadWise" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Readwise">
-    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="ReadWise">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= yield :head %>
-
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
-
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
-    <%= yield %>
+    <% if user_signed_in? %>
+      <aside class="sidebar">
+        <div class="sidebar-brand">
+          <span class="brand-icon">◈</span>
+          <span class="brand-name">ReadWise</span>
+        </div>
+
+        <nav class="sidebar-nav">
+          <%= link_to books_path, class: "nav-item #{active_nav?(:books) ? "active" : ""}" do %>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+            Library
+          <% end %>
+          <%= link_to "#insights", class: "nav-item" do %>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Insights
+          <% end %>
+          <%= link_to recommendations_path, class: "nav-item #{active_nav?(:recommendations) ? "active" : ""}" do %>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            Reading Queue
+          <% end %>
+          <%= link_to recommenders_path, class: "nav-item #{active_nav?(:recommenders) ? "active" : ""}" do %>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            Friends
+          <% end %>
+        </nav>
+
+        <div class="sidebar-footer">
+          <%= button_to "Sign out", session_path, method: :delete, class: "sign-out-btn" %>
+        </div>
+      </aside>
+
+      <main class="main">
+        <% if notice.present? %>
+          <p class="flash flash--notice"><%= notice %></p>
+        <% end %>
+        <% if alert.present? %>
+          <p class="flash flash--alert"><%= alert %></p>
+        <% end %>
+        <%= yield %>
+      </main>
+    <% else %>
+      <div class="auth-wrap">
+        <%= yield %>
+      </div>
+    <% end %>
   </body>
 </html>
