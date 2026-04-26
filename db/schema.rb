@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_25_014812) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_26_135504) do
   create_table "books", force: :cascade do |t|
     t.string "author"
     t.string "cover_url"
@@ -29,7 +29,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_25_014812) do
   create_table "recommendations", force: :cascade do |t|
     t.string "book_author"
     t.string "book_title"
+    t.string "book_type"
     t.datetime "created_at", null: false
+    t.integer "outcome_rating"
     t.date "read_at"
     t.text "reason"
     t.integer "recommender_id", null: false
@@ -43,7 +45,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_25_014812) do
   create_table "recommenders", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email_address"
+    t.float "fiction_match"
     t.string "name"
+    t.float "nonfiction_match"
     t.integer "recommender_type"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
