@@ -1,6 +1,6 @@
 require "csv"
 
-class Books::ImportTemplateController < ApplicationController
+class Books::ImportTemplatesController < ApplicationController
   HEADERS = %w[title author genre year_read rating notes].freeze
 
   def show
