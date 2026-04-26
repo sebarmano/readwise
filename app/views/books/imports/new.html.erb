@@ -4,7 +4,7 @@
 
 <div class="import-wrap">
   <p class="import-hint">
-    Upload a CSV file to bulk-import books into your library.
+    Bulk-import books from a CSV file.
     <%= link_to "Download template", books_import_template_path, class: "link" %> to see the expected format.
   </p>
 
@@ -13,9 +13,22 @@
       <div class="form-errors"><p class="form-error"><%= flash[:alert] %></p></div>
     <% end %>
 
-    <div class="field">
-      <%= f.label :file, "CSV file" %>
-      <%= f.file_field :file, accept: ".csv" %>
+    <div class="drop-zone"
+         data-controller="file-drop"
+         data-action="click->file-drop#open dragover->file-drop#dragover dragleave->file-drop#dragleave drop->file-drop#drop">
+      <svg class="drop-zone__icon" width="32" height="32" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      <p class="drop-zone__label" data-file-drop-target="label">
+        Drop CSV here or click to browse
+      </p>
+      <p class="drop-zone__hint" data-file-drop-target="hint">.csv files only</p>
+      <%= f.file_field :file, accept: ".csv",
+          style: "display:none",
+          data: { file_drop_target: "input", action: "change->file-drop#pick" } %>
     </div>
 
     <div class="form-actions">
