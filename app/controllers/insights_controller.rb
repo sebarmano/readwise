@@ -14,15 +14,15 @@ class InsightsController < ApplicationController
 
   def compute_ratings(books)
     raw = books.group(:rating).count
-    loved = raw[Book.ratings[:loved]] || 0
-    liked = raw[Book.ratings[:liked]] || 0
-    meh = raw[Book.ratings[:meh]] || 0
+    loved = raw["loved"] || 0
+    liked = raw["liked"] || 0
+    meh = raw["meh"] || 0
     {loved:, liked:, meh:, total: @total}
   end
 
   def compute_authors(books)
     books.where.not(author: nil)
-      .select("author, COUNT(*) AS total_count, SUM(CASE WHEN rating = #{Book.ratings[:loved]} THEN 1 ELSE 0 END) AS loved_count")
+      .select("author, COUNT(*) AS total_count, SUM(CASE WHEN rating = #{Book.ratings["loved"]} THEN 1 ELSE 0 END) AS loved_count")
       .group(:author)
       .order("total_count DESC")
       .limit(6)
