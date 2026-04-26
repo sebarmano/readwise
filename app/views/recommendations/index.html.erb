@@ -1,1 +1,18 @@
-<p class="empty-state">Reading Queue (coming soon)</p>
+<% content_for :head do %>
+  <%= stylesheet_link_tag "recommendations", "data-turbo-track": "reload" %>
+<% end %>
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Reading Queue</h1>
+    <p class="page-sub"><%= pluralize(@recommendations.size, "recommendation") %></p>
+  </div>
+</div>
+
+<% if @recommendations.empty? %>
+  <p class="empty-state">No recommendations yet. Ask a friend to recommend a book.</p>
+<% else %>
+  <div class="rec-list">
+    <%= render @recommendations %>
+  </div>
+<% end %>

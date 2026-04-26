@@ -1,6 +1,6 @@
 class RecommendationsController < ApplicationController
   def index
-    @recommendations = Current.user.recommendations.recent
+    @recommendations = Current.user.recommendations.includes(:recommender).by_queue_order
   end
 
   def show

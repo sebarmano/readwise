@@ -9,6 +9,9 @@ class Recommendation < ApplicationRecord
 
   scope :active, -> { where(status: [:pending, :reading]) }
   scope :recent, -> { order(created_at: :desc) }
+  scope :by_queue_order, -> {
+    order(Arel.sql("CASE status WHEN 1 THEN 0 WHEN 0 THEN 1 WHEN 2 THEN 2 WHEN 3 THEN 3 END"), created_at: :desc)
+  }
 
   def mark_as_read!(outcome_rating:)
     update!(status: :read, outcome_rating:, read_at: Date.current)
