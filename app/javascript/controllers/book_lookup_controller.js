@@ -8,7 +8,7 @@ export default class extends Controller {
     if (!q) return
 
     const response = await fetch(`/books/search?q=${encodeURIComponent(q)}`, {
-      headers: { Accept: "application/json" }
+      headers: { Accept: "application/json" },
     })
     const results = await response.json()
     this.#renderResults(results)
@@ -24,10 +24,13 @@ export default class extends Controller {
 
   #renderResults(results) {
     if (!results.length) {
-      this.resultsTarget.innerHTML = '<p class="lookup-empty">No results found.</p>'
+      this.resultsTarget.innerHTML =
+        '<p class="lookup-empty">No results found.</p>'
       return
     }
-    this.resultsTarget.innerHTML = results.map(r => this.#resultButton(r)).join("")
+    this.resultsTarget.innerHTML = results
+      .map((r) => this.#resultButton(r))
+      .join("")
   }
 
   #resultButton(r) {

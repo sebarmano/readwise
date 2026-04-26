@@ -20,9 +20,11 @@ export default class extends Controller {
   }
 
   #activateChip(chip, group) {
-    this.element.querySelectorAll(`[data-filter-group="${group}"]`).forEach(el => {
-      el.classList.toggle("active", el === chip)
-    })
+    this.element
+      .querySelectorAll(`[data-filter-group="${group}"]`)
+      .forEach((el) => {
+        el.classList.toggle("active", el === chip)
+      })
   }
 
   #restoreFromUrl() {
@@ -30,11 +32,15 @@ export default class extends Controller {
     const rating = params.get("rating") || ""
     const genre = params.get("genre") || ""
 
-    this.element.querySelectorAll("[data-filter-group='rating']").forEach(chip => {
-      chip.classList.toggle("active", chip.dataset.value === rating)
-    })
-    this.element.querySelectorAll("[data-filter-group='genre']").forEach(chip => {
-      chip.classList.toggle("active", chip.dataset.value === genre)
-    })
+    this.element
+      .querySelectorAll("[data-filter-group='rating']")
+      .forEach((chip) => {
+        chip.classList.toggle("active", chip.dataset.value === rating)
+      })
+    this.element
+      .querySelectorAll("[data-filter-group='genre']")
+      .forEach((chip) => {
+        chip.classList.toggle("active", chip.dataset.value === genre)
+      })
   }
 }
