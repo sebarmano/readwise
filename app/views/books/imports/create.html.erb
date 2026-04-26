@@ -1,0 +1,30 @@
+<div class="page-header">
+  <h2 class="page-title">Import Results</h2>
+</div>
+
+<div class="import-results">
+  <div class="import-stat">
+    <span class="import-stat__number"><%= @imported %></span>
+    <span class="import-stat__label">imported</span>
+  </div>
+  <div class="import-stat">
+    <span class="import-stat__number"><%= @skipped %></span>
+    <span class="import-stat__label">skipped (duplicates)</span>
+  </div>
+</div>
+
+<% if @errors.any? %>
+  <div class="form-errors">
+    <p class="import-errors-title">Rows with errors were not imported:</p>
+    <ul class="import-error-list">
+      <% @errors.each do |msg| %>
+        <li class="form-error"><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<div class="form-actions">
+  <%= link_to "Back to Library", books_path, class: "btn btn--primary" %>
+  <%= link_to "Import more", new_books_import_path, class: "btn btn--ghost" %>
+</div>

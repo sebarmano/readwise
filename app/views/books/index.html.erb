@@ -6,6 +6,7 @@
     </div>
     <div class="header-actions">
       <%= link_to "Add book", new_book_path, class: "btn btn--primary" %>
+      <%= link_to "Import CSV", new_books_import_path, class: "btn btn--ghost" %>
       <div class="search-wrap">
         <%= form_with url: books_path, method: :get,
             data: { search_target: "form", filter_target: "form", turbo_frame: "book-grid" } do |f| %>

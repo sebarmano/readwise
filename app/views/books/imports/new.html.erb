@@ -1,0 +1,26 @@
+<div class="page-header">
+  <h2 class="page-title">Import Books</h2>
+</div>
+
+<div class="import-wrap">
+  <p class="import-hint">
+    Upload a CSV file to bulk-import books into your library.
+    <%= link_to "Download template", books_import_template_path, class: "link" %> to see the expected format.
+  </p>
+
+  <%= form_with url: books_import_path, method: :post, multipart: true do |f| %>
+    <% if flash[:alert] %>
+      <div class="form-errors"><p class="form-error"><%= flash[:alert] %></p></div>
+    <% end %>
+
+    <div class="field">
+      <%= f.label :file, "CSV file" %>
+      <%= f.file_field :file, accept: ".csv" %>
+    </div>
+
+    <div class="form-actions">
+      <%= f.submit "Import", class: "btn btn--primary" %>
+      <%= link_to "Cancel", books_path, class: "btn btn--ghost" %>
+    </div>
+  <% end %>
+</div>

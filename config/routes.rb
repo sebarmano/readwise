@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   resources :books
   namespace :books do
     resource :search, only: :show
+    resource :import, only: %i[new create]
+    resource :import_template, only: :show
   end
   resources :recommenders
   resources :recommendations, only: %i[index show update destroy]

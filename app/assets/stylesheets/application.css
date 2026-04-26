@@ -519,6 +519,20 @@ fieldset { border: none; padding: 0; }
 .lookup-meta  { font-size: var(--text-xs, 0.75rem); color: var(--text-3, var(--text-2)); }
 .lookup-empty { font-size: var(--text-sm); color: var(--text-3, var(--text-2)); }
 
+/* ── Import ─────────────────────────────────────────────────────────────────── */
+.import-wrap { max-width: 480px; }
+.import-hint { font-size: var(--text-sm); color: var(--text-2); margin-bottom: var(--s6); }
+.link { color: var(--text-1); text-decoration: underline; }
+
+.import-results { display: flex; gap: var(--s6); margin-bottom: var(--s6); }
+.import-stat { display: flex; flex-direction: column; align-items: center; gap: var(--s1); }
+.import-stat__number { font-size: 2rem; font-weight: 700; color: var(--text-1); }
+.import-stat__label  { font-size: var(--text-sm); color: var(--text-2); }
+
+.import-errors-title { font-size: var(--text-sm); font-weight: 600; color: var(--meh); margin-bottom: var(--s2); }
+.import-error-list { list-style: disc; padding-left: var(--s4); }
+.import-error-list li { margin-bottom: var(--s1); }
+
 .form-errors {
   background: var(--meh-soft);
   border: 1px solid var(--meh);
