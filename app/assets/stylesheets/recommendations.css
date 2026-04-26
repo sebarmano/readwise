@@ -93,3 +93,45 @@
   border-top: 1px solid var(--border);
   margin-top: var(--s1);
 }
+
+/* ── Outcome form ────────────────────────────────────────────────────────────── */
+.outcome-form {
+  padding-top: var(--s3);
+  border-top: 1px solid var(--border);
+  margin-top: var(--s1);
+}
+
+.outcome-form__label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-2);
+  margin-bottom: var(--s2);
+}
+
+.outcome-form__options {
+  display: flex;
+  gap: var(--s2);
+}
+
+.outcome-btn { border-radius: var(--r-pill); }
+.outcome-btn--loved:hover { background: var(--loved-soft); border-color: var(--loved); color: var(--loved); }
+.outcome-btn--liked:hover { background: var(--liked-soft); border-color: var(--liked); color: var(--liked); }
+.outcome-btn--meh:hover   { background: var(--meh-soft);   border-color: var(--meh);   color: var(--meh);   }
+
+/* ── Sidebar badge ───────────────────────────────────────────────────────────── */
+#queue-badge { display: contents; }
+
+.nav-badge {
+  margin-left: auto;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--r-pill);
+  background: rgba(99, 102, 241, .2);
+  color: #6366F1;
+  font-size: 10px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

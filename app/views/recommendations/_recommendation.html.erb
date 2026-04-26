@@ -1,39 +1,63 @@
-<div class="rec-card">
-  <div class="rec-card__header">
-    <div class="rec-source">
-      <% if recommendation.recommender.friend? %>
-        <span class="source-dot source-dot--friend">👤</span>
-      <% else %>
-        <span class="source-dot source-dot--claude">◈</span>
-      <% end %>
-      <span class="source-name"><%= recommendation.recommender.name %></span>
+<turbo-frame id="rec-<%= recommendation.id %>">
+  <div class="rec-card">
+    <div class="rec-card__header">
+      <div class="rec-source">
+        <% if recommendation.recommender.friend? %>
+          <span class="source-dot source-dot--friend">👤</span>
+        <% else %>
+          <span class="source-dot source-dot--claude">◈</span>
+        <% end %>
+        <span class="source-name"><%= recommendation.recommender.name %></span>
+      </div>
+      <div class="rec-pills">
+        <span class="status-pill <%= recommendation.status %>"><%= recommendation.status.humanize %></span>
+        <% if recommendation.outcome_rating.present? %>
+          <span class="outcome-pill <%= recommendation.outcome_rating %>"><%= recommendation.outcome_rating.humanize %></span>
+        <% end %>
+      </div>
     </div>
-    <div class="rec-pills">
-      <span class="status-pill <%= recommendation.status %>"><%= recommendation.status.humanize %></span>
-      <% if recommendation.outcome_rating.present? %>
-        <span class="outcome-pill <%= recommendation.outcome_rating %>"><%= recommendation.outcome_rating.humanize %></span>
-      <% end %>
-    </div>
-  </div>
 
-  <div class="rec-card__body">
-    <p class="rec-card__title"><%= recommendation.book_title %></p>
-    <p class="rec-card__author"><%= recommendation.book_author %></p>
-    <% if recommendation.reason.present? %>
-      <p class="rec-card__reason"><%= recommendation.reason %></p>
+    <div class="rec-card__body">
+      <p class="rec-card__title"><%= recommendation.book_title %></p>
+      <p class="rec-card__author"><%= recommendation.book_author %></p>
+      <% if recommendation.reason.present? %>
+        <p class="rec-card__reason"><%= recommendation.reason %></p>
+      <% end %>
+    </div>
+
+    <% if recommendation.read? && recommendation.outcome_rating.blank? %>
+      <div class="outcome-form">
+        <p class="outcome-form__label">How was it?</p>
+        <div class="outcome-form__options">
+          <%= button_to "Loved", recommendation_path(recommendation),
+              params: {recommendation: {outcome_rating: :loved}},
+              method: :patch, class: "btn btn--sm outcome-btn outcome-btn--loved" %>
+          <%= button_to "Liked", recommendation_path(recommendation),
+              params: {recommendation: {outcome_rating: :liked}},
+              method: :patch, class: "btn btn--sm outcome-btn outcome-btn--liked" %>
+          <%= button_to "Meh", recommendation_path(recommendation),
+              params: {recommendation: {outcome_rating: :meh}},
+              method: :patch, class: "btn btn--sm outcome-btn outcome-btn--meh" %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if recommendation.pending? || recommendation.reading? %>
+      <div class="rec-card__actions">
+        <% if recommendation.pending? %>
+          <%= button_to "Start reading", recommendation_path(recommendation),
+              params: {recommendation: {status: :reading}},
+              method: :patch, class: "btn btn--sm btn--ghost" %>
+        <% end %>
+        <% if recommendation.reading? %>
+          <%= button_to "Mark as read", recommendation_path(recommendation),
+              params: {recommendation: {status: :read}},
+              method: :patch, class: "btn btn--sm btn--primary" %>
+        <% end %>
+        <%= button_to "Skip", recommendation_path(recommendation),
+            params: {recommendation: {status: :skipped}},
+            method: :patch, class: "btn btn--sm btn--ghost btn--danger" %>
+      </div>
     <% end %>
   </div>
-
-  <% if recommendation.pending? || recommendation.reading? %>
-    <div class="rec-card__actions">
-      <% if recommendation.pending? %>
-        <%= button_to "Start reading", recommendation_path(recommendation),
-            params: {recommendation: {status: :reading}},
-            method: :patch, class: "btn btn--sm btn--ghost" %>
-      <% end %>
-      <%= button_to "Skip", recommendation_path(recommendation),
-          params: {recommendation: {status: :skipped}},
-          method: :patch, class: "btn btn--sm btn--ghost btn--danger" %>
-    </div>
-  <% end %>
-</div>
+</turbo-frame>

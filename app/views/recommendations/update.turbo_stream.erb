@@ -1,0 +1,6 @@
+<%= turbo_stream.replace "rec-#{@recommendation.id}" do %>
+  <%= render @recommendation %>
+<% end %>
+<%= turbo_stream.replace "queue-badge" do %>
+  <%= render "layouts/queue_badge" %>
+<% end %>

@@ -1,0 +1,6 @@
+<span id="queue-badge">
+  <% count = Current.user&.recommendations&.active&.count.to_i %>
+  <% if count > 0 %>
+    <span class="nav-badge"><%= count %></span>
+  <% end %>
+</span>

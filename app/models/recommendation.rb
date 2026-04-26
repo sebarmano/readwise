@@ -7,6 +7,8 @@ class Recommendation < ApplicationRecord
 
   validates :book_title, :book_author, :status, presence: true
 
+  before_save -> { self.read_at ||= Date.current }, if: :read?
+
   scope :active, -> { where(status: [:pending, :reading]) }
   scope :recent, -> { order(created_at: :desc) }
   scope :by_queue_order, -> {

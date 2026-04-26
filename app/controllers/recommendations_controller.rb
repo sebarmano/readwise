@@ -10,7 +10,13 @@ class RecommendationsController < ApplicationController
   def update
     @recommendation = Current.user.recommendations.find(params[:id])
     @recommendation.update!(recommendation_params)
-    redirect_to recommendations_path
+    TasteMatchCalculator.new(@recommendation.recommender).call if @recommendation.saved_change_to_outcome_rating?
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to recommendations_path }
+    end
+  rescue ArgumentError
+    head :unprocessable_entity
   end
 
   def destroy
@@ -21,6 +27,6 @@ class RecommendationsController < ApplicationController
   private
 
   def recommendation_params
-    params.expect(recommendation: [:status])
+    params.expect(recommendation: [:status, :outcome_rating])
   end
 end

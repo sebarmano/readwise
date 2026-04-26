@@ -89,4 +89,52 @@ class RecommendationsTest < ApplicationSystemTestCase
 
     assert_selector ".source-dot--claude"
   end
+
+  test "clicking Start reading updates card status pill inline" do
+    Recommendation.create!(user: @user, recommender: @friend,
+      book_title: "Dune", book_author: "Frank Herbert", status: :pending)
+
+    visit recommendations_path
+    click_button "Start reading"
+
+    assert_selector ".status-pill.reading"
+    assert_no_selector ".status-pill.pending"
+    assert_current_path recommendations_path
+  end
+
+  test "clicking Mark as read shows outcome rating form" do
+    Recommendation.create!(user: @user, recommender: @friend,
+      book_title: "Dune", book_author: "Frank Herbert", status: :reading)
+
+    visit recommendations_path
+    click_button "Mark as read"
+
+    assert_selector ".outcome-form"
+    assert_button "Loved"
+    assert_button "Liked"
+    assert_button "Meh"
+  end
+
+  test "selecting an outcome rating updates card with outcome pill" do
+    Recommendation.create!(user: @user, recommender: @friend,
+      book_title: "Dune", book_author: "Frank Herbert", status: :reading)
+
+    visit recommendations_path
+    click_button "Mark as read"
+    click_button "Loved"
+
+    assert_selector ".outcome-pill.loved"
+    assert_no_selector ".outcome-form"
+  end
+
+  test "clicking Skip moves card to skipped status" do
+    Recommendation.create!(user: @user, recommender: @friend,
+      book_title: "Dune", book_author: "Frank Herbert", status: :pending)
+
+    visit recommendations_path
+    click_button "Skip"
+
+    assert_selector ".status-pill.skipped"
+    assert_no_selector ".rec-card__actions"
+  end
 end
