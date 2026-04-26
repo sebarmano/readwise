@@ -52,7 +52,8 @@ class LibraryTest < ApplicationSystemTestCase
     fill_in "Notes", with: "A masterpiece"
     click_on "Save book"
 
-    assert_text "A masterpiece"
+    assert_current_path books_path
+    assert_text "Book updated."
   end
 
   test "user can delete a book" do

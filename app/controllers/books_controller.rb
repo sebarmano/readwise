@@ -34,7 +34,7 @@ class BooksController < ApplicationController
 
   def update
     if @book.update(book_params)
-      redirect_to book_path(@book), notice: "Book updated."
+      redirect_to books_path, notice: "Book updated."
     else
       render :edit, status: :unprocessable_entity
     end
