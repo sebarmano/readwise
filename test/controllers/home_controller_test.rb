@@ -1,8 +1,14 @@
 require "test_helper"
 
 class HomeControllerTest < ActionDispatch::IntegrationTest
-  test "should get index" do
-    get home_index_url
+  test "redirects to sign in when unauthenticated" do
+    get root_url
+    assert_redirected_to new_session_path
+  end
+
+  test "returns success when signed in" do
+    sign_in_as users(:one)
+    get root_url
     assert_response :success
   end
 end
