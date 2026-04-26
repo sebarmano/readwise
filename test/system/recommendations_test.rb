@@ -137,4 +137,35 @@ class RecommendationsTest < ApplicationSystemTestCase
     assert_selector ".status-pill.skipped"
     assert_no_selector ".rec-card__actions"
   end
+
+  test "Add button on queue page links to new recommendation form" do
+    visit recommendations_path
+    click_link "+ Add"
+
+    assert_current_path new_recommendation_path
+  end
+
+  test "user can log a friend recommendation via the form" do
+    visit new_recommendation_path
+
+    fill_in "Book title", with: "Piranesi"
+    fill_in "Author", with: "Susanna Clarke"
+    fill_in "Recommended by", with: "Lea"
+    fill_in "Why they recommended it", with: "Utterly unique"
+    click_button "Add to queue"
+
+    assert_current_path recommendations_path
+    assert_text "Piranesi"
+    assert_text "Lea"
+  end
+
+  test "form shows errors when required fields are missing" do
+    visit new_recommendation_path
+
+    fill_in "Recommended by", with: "Lea"
+    click_button "Add to queue"
+
+    assert_current_path new_recommendation_path
+    assert_text "can't be blank"
+  end
 end

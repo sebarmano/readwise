@@ -1,0 +1,54 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "recommendations", "data-turbo-track": "reload" %>
+<% end %>
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Log a Recommendation</h1>
+    <p class="page-sub">A friend told you to read something good.</p>
+  </div>
+</div>
+
+<%= form_with url: recommendations_path, class: "book-form" do |f| %>
+  <% if @recommendation.errors.any? %>
+    <div class="form-errors">
+      <% @recommendation.errors.full_messages.each do |msg| %>
+        <p class="form-error"><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <label for="recommendation_book_title">Book title</label>
+    <input type="text" id="recommendation_book_title" name="recommendation[book_title]"
+           value="<%= @recommendation.book_title %>">
+  </div>
+
+  <div class="field">
+    <label for="recommendation_book_author">Author</label>
+    <input type="text" id="recommendation_book_author" name="recommendation[book_author]"
+           value="<%= @recommendation.book_author %>">
+  </div>
+
+  <div class="field">
+    <label for="recommendation_recommended_by">Recommended by</label>
+    <input type="text" id="recommendation_recommended_by" name="recommendation[recommended_by]"
+           list="recommenders-list" autocomplete="off">
+    <datalist id="recommenders-list">
+      <% @recommender_names.each do |name| %>
+        <option value="<%= name %>">
+      <% end %>
+    </datalist>
+  </div>
+
+  <div class="field">
+    <label for="recommendation_reason">Why they recommended it (optional)</label>
+    <textarea id="recommendation_reason" name="recommendation[reason]"
+              rows="3"><%= @recommendation.reason %></textarea>
+  </div>
+
+  <div class="form-actions">
+    <input type="submit" value="Add to queue" class="btn btn--primary">
+    <%= link_to "Cancel", recommendations_path, class: "btn btn--ghost" %>
+  </div>
+<% end %>

@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   resources :books
   get "insights", to: "insights#index", as: :insights
   resources :recommenders
-  resources :recommendations, only: %i[index show update destroy]
+  resources :recommendations, only: %i[index new create show update destroy]
 
   get "up" => "rails/health#show", :as => :rails_health_check
 

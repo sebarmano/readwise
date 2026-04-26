@@ -7,6 +7,9 @@
     <h1 class="page-title">Reading Queue</h1>
     <p class="page-sub"><%= pluralize(@recommendations.size, "recommendation") %></p>
   </div>
+  <div class="header-actions">
+    <%= link_to "+ Add", new_recommendation_path, class: "btn btn--primary btn--sm" %>
+  </div>
 </div>
 
 <% if @recommendations.empty? %>
