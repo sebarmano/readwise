@@ -11,21 +11,52 @@
 
 <div class="insights-grid">
 
-  <%# ── Total ──────────────────────────────────────────────────────────── %>
+  <%# ── Row 1: stat cards + ratings ───────────────────────────────────── %>
+
   <div class="bento-card bento-card--stat col-3">
     <p class="bento-label">Total Read</p>
     <p class="big-num"><%= @total %></p>
   </div>
 
-  <%# ── Loved % ─────────────────────────────────────────────────────────── %>
   <div class="bento-card bento-card--stat col-3">
     <p class="bento-label">Loved</p>
     <% loved_pct = @total > 0 ? (@ratings[:loved] * 100.0 / @total).round : 0 %>
     <p class="big-num big-num--loved"><%= loved_pct %>%</p>
   </div>
 
-  <%# ── Pace ───────────────────────────────────────────────────────────── %>
   <div class="bento-card col-6">
+    <p class="bento-label">Ratings</p>
+    <div class="bar-rows">
+      <% {loved: "Loved", liked: "Liked", meh: "Meh"}.each do |key, label| %>
+        <% count = @ratings[key] %>
+        <div class="bar-row">
+          <span class="bar-row__label"><%= label %></span>
+          <div class="bar-row__track">
+            <div class="bar-row__fill bar-row__fill--<%= key %>"
+                 style="--pct: <%= @total > 0 ? (count * 100.0 / @total).round : 0 %>%"></div>
+          </div>
+          <span class="bar-row__count"><%= count %></span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# ── Row 2: genre chart + pace ─────────────────────────────────────── %>
+
+  <div class="bento-card col-8"
+       data-controller="insights-chart"
+       data-insights-chart-genres-value="<%= @genres.to_json %>">
+    <p class="bento-label">Top Genres</p>
+    <% if @genres.any? %>
+      <div class="chart-wrap">
+        <canvas id="genre-chart"></canvas>
+      </div>
+    <% else %>
+      <p class="empty-state">No genre data yet.</p>
+    <% end %>
+  </div>
+
+  <div class="bento-card col-4">
     <p class="bento-label">Pace</p>
     <% pace_total = @pace.values.sum.to_f %>
     <% if pace_total > 0 %>
@@ -47,46 +78,14 @@
     <% end %>
   </div>
 
-  <%# ── Ratings ────────────────────────────────────────────────────────── %>
-  <div class="bento-card col-4">
-    <p class="bento-label">Ratings</p>
-    <div class="bar-rows">
-      <% {loved: "Loved", liked: "Liked", meh: "Meh"}.each do |key, label| %>
-        <% count = @ratings[key] %>
-        <div class="bar-row">
-          <span class="bar-row__label"><%= label %></span>
-          <div class="bar-row__track">
-            <div class="bar-row__fill bar-row__fill--<%= key %>"
-                 style="--pct: <%= @total > 0 ? (count * 100.0 / @total).round : 0 %>%"></div>
-          </div>
-          <span class="bar-row__count"><%= count %></span>
-        </div>
-      <% end %>
-    </div>
-  </div>
+  <%# ── Row 3: authors + moods ─────────────────────────────────────────── %>
 
-  <%# ── Genre chart ─────────────────────────────────────────────────────── %>
-  <div class="bento-card col-8"
-       data-controller="insights-chart"
-       data-insights-chart-genres-value="<%= @genres.to_json %>">
-    <p class="bento-label">Top Genres</p>
-    <% if @genres.any? %>
-      <div class="chart-wrap">
-        <canvas id="genre-chart"></canvas>
-      </div>
-    <% else %>
-      <p class="empty-state">No genre data yet.</p>
-    <% end %>
-  </div>
-
-  <%# ── Authors ─────────────────────────────────────────────────────────── %>
   <div class="bento-card col-7">
     <p class="bento-label">Most Read Authors</p>
     <% max_count = @authors.map(&:total_count).max || 0 %>
     <%= render "author_list", authors: @authors, max_count: max_count %>
   </div>
 
-  <%# ── Mood cloud ─────────────────────────────────────────────────────── %>
   <div class="bento-card col-5">
     <p class="bento-label">Reading Moods</p>
     <%= render "mood_cloud", moods: @moods %>
