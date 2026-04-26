@@ -3,7 +3,7 @@ class Recommendation < ApplicationRecord
   belongs_to :recommender
 
   enum :status, {pending: 0, reading: 1, read: 2, skipped: 3}
-  enum :outcome_rating, {meh: 1, liked: 2, loved: 3}, prefix: :outcome
+  enum :outcome_rating, {meh: 1, liked: 2, loved: 3}
 
   validates :book_title, :book_author, :status, presence: true
 
