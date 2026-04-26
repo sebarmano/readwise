@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["title", "author", "year", "results"]
+  static targets = ["title", "author", "year", "genre", "results"]
 
   async lookup() {
     const q = this.titleTarget.value.trim()
@@ -15,10 +15,11 @@ export default class extends Controller {
   }
 
   select(event) {
-    const { title, author, year } = event.params
+    const { title, author, year, genre } = event.params
     this.titleTarget.value = title || ""
     this.authorTarget.value = author || ""
     if (year) this.yearTarget.value = year
+    if (genre) this.genreTarget.value = genre
     this.resultsTarget.innerHTML = ""
   }
 
@@ -37,12 +38,14 @@ export default class extends Controller {
     const title = this.#esc(r.title || "")
     const author = this.#esc(r.author || "")
     const year = r.year || ""
+    const genre = this.#esc(r.genre || "")
     const meta = [author, year].filter(Boolean).join(" · ")
     return `<button type="button" class="lookup-result"
       data-action="click->book-lookup#select"
       data-book-lookup-title-param="${title}"
       data-book-lookup-author-param="${author}"
-      data-book-lookup-year-param="${year}">
+      data-book-lookup-year-param="${year}"
+      data-book-lookup-genre-param="${genre}">
       <span class="lookup-title">${title}</span>
       <span class="lookup-meta">${this.#esc(meta)}</span>
     </button>`
