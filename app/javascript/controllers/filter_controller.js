@@ -14,8 +14,10 @@ export default class extends Controller {
   }
 
   setGenre(event) {
-    this.genreInputTarget.value = event.currentTarget.dataset.value
-    this.#activateChip(event.currentTarget, "genre")
+    const chip = event.currentTarget
+    const isActive = chip.classList.contains("active")
+    this.genreInputTarget.value = isActive ? "" : chip.dataset.value
+    this.#activateChip(isActive ? null : chip, "genre")
     this.formTarget.requestSubmit()
   }
 
