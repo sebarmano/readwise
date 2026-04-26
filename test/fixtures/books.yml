@@ -5,6 +5,8 @@ beloved:
   year: 1987
   genre: Fiction
   rating: loved
+  mood: literary/emotional
+  pace: slow
   notes: Haunting and powerful
   read_at: 2025-01-10
 
@@ -15,8 +17,98 @@ meh_book:
   year: 1988
   genre: Fiction
   rating: meh
+  mood: spiritual
+  pace: medium
   notes: Overhyped
   read_at: 2025-03-01
+
+sapiens:
+  user: one
+  title: Sapiens
+  author: Yuval Noah Harari
+  year: 2011
+  genre: Non-Fiction
+  rating: loved
+  mood: educational/inspiring
+  pace: medium
+  read_at: 2025-02-14
+
+dune_fic:
+  user: one
+  title: Dune
+  author: Frank Herbert
+  year: 1965
+  genre: Sci-Fi
+  rating: loved
+  mood: epic/adventure
+  pace: medium
+  read_at: 2025-04-01
+
+atomic_habits:
+  user: one
+  title: Atomic Habits
+  author: James Clear
+  year: 2018
+  genre: Self-Help
+  rating: liked
+  mood: motivational/practical
+  pace: fast
+  read_at: 2025-02-28
+
+thinking_fast_slow:
+  user: one
+  title: Thinking, Fast and Slow
+  author: Daniel Kahneman
+  year: 2011
+  genre: Psychology
+  rating: loved
+  mood: educational/thought-provoking
+  pace: slow
+  read_at: 2025-01-25
+
+nineteen_eighty_four:
+  user: one
+  title: "1984"
+  author: George Orwell
+  year: 1949
+  genre: Fiction
+  rating: loved
+  mood: dark/dystopian
+  pace: medium
+  read_at: 2025-03-15
+
+meditations:
+  user: one
+  title: Meditations
+  author: Marcus Aurelius
+  year: 180
+  genre: Philosophy
+  rating: liked
+  mood: reflective/philosophical
+  pace: slow
+  read_at: 2025-04-05
+
+the_hobbit:
+  user: one
+  title: The Hobbit
+  author: J.R.R. Tolkien
+  year: 1937
+  genre: Fantasy
+  rating: liked
+  mood: adventure/whimsical
+  pace: medium
+  read_at: 2025-03-20
+
+born_to_run:
+  user: one
+  title: Born to Run
+  author: Christopher McDougall
+  year: 2009
+  genre: Sports
+  rating: meh
+  mood: inspirational
+  pace: fast
+  read_at: 2025-04-10
 
 other_users_book:
   user: two

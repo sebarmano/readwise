@@ -1,0 +1,16 @@
+<%# locals: (authors:, max_count:) %>
+<% if authors.empty? %>
+  <p class="empty-state">No authors yet.</p>
+<% else %>
+  <ul class="author-list">
+    <% authors.each do |author| %>
+      <li class="author-row">
+        <span class="author-name"><%= author.author %></span>
+        <div class="author-bar-wrap">
+          <div class="author-bar" style="--pct: <%= (author.total_count.to_f / max_count * 100).round %>%"></div>
+        </div>
+        <span class="author-count"><%= author.total_count %></span>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

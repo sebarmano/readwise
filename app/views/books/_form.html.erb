@@ -32,7 +32,7 @@
     </div>
     <div class="field">
       <%= f.label :genre, "Genre" %>
-      <%= f.text_field :genre %>
+      <%= f.text_field :genre, data: { book_lookup_target: "genre" } %>
     </div>
   </div>
 
@@ -52,6 +52,18 @@
   <div class="field">
     <%= f.label :read_at, "Date read" %>
     <%= f.date_field :read_at %>
+  </div>
+
+  <div class="field field--row">
+    <div class="field">
+      <%= f.label :mood, "Mood(s)" %>
+      <%= f.text_field :mood, placeholder: "e.g. dark/inspiring" %>
+    </div>
+    <div class="field">
+      <%= f.label :pace, "Pace" %>
+      <%= f.select :pace, [["", nil], ["Fast", "fast"], ["Medium", "medium"], ["Slow", "slow"]],
+          {}, class: "field-select" %>
+    </div>
   </div>
 
   <div class="field">

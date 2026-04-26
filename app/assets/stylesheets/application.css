@@ -590,3 +590,24 @@ fieldset { border: none; padding: 0; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: var(--r-pill); }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-4); }
+
+/* ── Select ─────────────────────────────────────────────────────────────── */
+select.field-select {
+  height: 36px;
+  padding: 0 var(--s3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-surface);
+  font-family: var(--font);
+  font-size: var(--text-base);
+  color: var(--text-1);
+  outline: none;
+  cursor: pointer;
+  transition: border-color var(--ease), box-shadow var(--ease);
+  width: 100%;
+}
+
+select.field-select:focus {
+  border-color: var(--border-strong);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}

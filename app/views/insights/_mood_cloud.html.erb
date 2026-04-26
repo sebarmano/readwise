@@ -1,0 +1,15 @@
+<%# locals: (moods:) %>
+<% if moods.empty? %>
+  <p class="empty-state">No moods recorded yet.</p>
+<% else %>
+  <% max = moods.values.max.to_f %>
+  <div class="mood-cloud">
+    <% moods.each do |mood, count| %>
+      <% ratio = count / max %>
+      <% size_mod = ratio >= 0.7 ? "--lg" : ratio <= 0.3 ? "--sm" : nil %>
+      <span class="mood-cloud-tag<%= " mood-cloud-tag#{size_mod}" if size_mod %>">
+        <%= mood %>
+      </span>
+    <% end %>
+  </div>
+<% end %>

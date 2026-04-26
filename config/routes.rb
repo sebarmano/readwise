@@ -1,12 +1,13 @@
 Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
-  resources :books
   namespace :books do
     resource :search, only: :show
     resource :import, only: %i[new create]
     resource :import_template, only: :show
   end
+  resources :books
+  get "insights", to: "insights#index", as: :insights
   resources :recommenders
   resources :recommendations, only: %i[index show update destroy]
 
