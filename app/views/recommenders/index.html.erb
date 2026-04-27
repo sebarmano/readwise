@@ -1,1 +1,20 @@
-<p class="empty-state">Friends (coming soon)</p>
+<% content_for :head do %>
+  <%= stylesheet_link_tag "friends", "data-turbo-track": "reload" %>
+<% end %>
+
+<div class="page-header">
+  <h1 class="page-title">Friends</h1>
+</div>
+
+<% if @recommenders.any? %>
+  <div class="friends-grid">
+    <% @recommenders.each do |recommender| %>
+      <%= render "friend_card", recommender: recommender %>
+    <% end %>
+  </div>
+<% else %>
+  <div class="empty-state">
+    <p class="empty-state__text">No friends added yet.</p>
+    <p class="empty-state__hint">Log a friend recommendation from the <%= link_to "Reading Queue", new_recommendation_path %> to add them here.</p>
+  </div>
+<% end %>

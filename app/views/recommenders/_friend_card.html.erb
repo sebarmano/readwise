@@ -1,0 +1,39 @@
+<%# locals: (recommender:) %>
+<div class="friend-card">
+  <div class="friend-card__header">
+    <span class="friend-card__name"><%= recommender.name %></span>
+    <span class="friend-card__meta">
+      <%= recommender.recommendations.size %> recs
+      · <%= recommender.recommendations.count(&:read?) %> read
+      · <%= recommender.recommendations.count { |r| r.pending? || r.reading? } %> pending
+    </span>
+  </div>
+
+  <div class="friend-card__scores">
+    <div class="match-row">
+      <span class="match-label">Fiction</span>
+      <% if recommender.fiction_match %>
+        <div class="match-bar" aria-label="<%= (recommender.fiction_match * 100).round %>% fiction match">
+          <div class="match-bar__fill match-bar__fill--<%= match_bar_class(recommender.fiction_match) %>"
+               style="width: <%= (recommender.fiction_match * 100).round %>%"></div>
+        </div>
+        <span class="match-pct"><%= (recommender.fiction_match * 100).round %>%</span>
+      <% else %>
+        <span class="match-placeholder">—</span>
+      <% end %>
+    </div>
+
+    <div class="match-row">
+      <span class="match-label">Non-fiction</span>
+      <% if recommender.nonfiction_match %>
+        <div class="match-bar" aria-label="<%= (recommender.nonfiction_match * 100).round %>% non-fiction match">
+          <div class="match-bar__fill match-bar__fill--<%= match_bar_class(recommender.nonfiction_match) %>"
+               style="width: <%= (recommender.nonfiction_match * 100).round %>%"></div>
+        </div>
+        <span class="match-pct"><%= (recommender.nonfiction_match * 100).round %>%</span>
+      <% else %>
+        <span class="match-placeholder">—</span>
+      <% end %>
+    </div>
+  </div>
+</div>
