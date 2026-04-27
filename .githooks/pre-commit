@@ -9,9 +9,9 @@ if [ -n "$rb_files" ]; then
   echo "$rb_files" | xargs git add
 fi
 
-if [ -n "$erb_files" ] && command -v herb >/dev/null 2>&1; then
-  echo "$erb_files" | xargs herb fmt
-  echo "$erb_files" | xargs git add
+if [ -n "$erb_files" ] && [ -x bin/herb ]; then
+  echo "Running herb analyze on ERB templates..."
+  bin/herb analyze app/views/
 fi
 
 js_files=$(git diff --cached --name-only --diff-filter=ACM | grep '\.js$' || true)
