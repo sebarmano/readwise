@@ -6,4 +6,13 @@ module ApplicationHelper
   def active_nav?(controller_name_sym)
     controller_name.to_sym == controller_name_sym
   end
+
+  def match_bar_class(score)
+    return "none" if score.nil?
+    if score >= 0.75
+      "green"
+    else
+      (score >= 0.5) ? "amber" : "red"
+    end
+  end
 end

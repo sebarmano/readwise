@@ -3,6 +3,7 @@ one:
   name: MyString
   recommender_type: 1
   email_address: MyString
+  fiction_match: 0.5
 
 two:
   user: two

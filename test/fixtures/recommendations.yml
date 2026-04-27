@@ -53,3 +53,19 @@ marco_skipped_with_rating:
   book_type: fiction
   outcome_rating: 3
   read_at: 2026-03-01
+
+marco_pending_fiction:
+  user: one
+  recommender: marco
+  book_title: Anansi Boys
+  book_author: Neil Gaiman
+  status: 0
+  book_type: fiction
+
+claude_pending:
+  user: one
+  recommender: one
+  book_title: Foundation
+  book_author: Isaac Asimov
+  status: 0
+  book_type: fiction

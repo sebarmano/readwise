@@ -8,6 +8,10 @@
           <span class="source-dot source-dot--claude">◈</span>
         <% end %>
         <span class="source-name"><%= recommendation.recommender.name %></span>
+        <% match = recommendation.book_type == "fiction" ? recommendation.recommender.fiction_match : recommendation.recommender.nonfiction_match %>
+        <% if recommendation.recommender.friend? && match %>
+          <span class="match-mini match-mini--<%= match_bar_class(match) %>"><%= (match * 100).round %>% match</span>
+        <% end %>
       </div>
       <div class="rec-pills">
         <span class="status-pill <%= recommendation.status %>"><%= recommendation.status.humanize %></span>

@@ -40,8 +40,12 @@ class RecommendationsController < ApplicationController
 
   def update
     @recommendation = Current.user.recommendations.find(params[:id])
-    @recommendation.update!(recommendation_params)
-    TasteMatchCalculator.new(@recommendation.recommender).call if @recommendation.saved_change_to_outcome_rating?
+    if recommendation_params[:outcome_rating].present?
+      @recommendation.complete!(outcome_rating: recommendation_params[:outcome_rating])
+      @recommendation.recommender.reload
+    else
+      @recommendation.update!(recommendation_params)
+    end
     respond_to do |format|
       format.turbo_stream
       format.html { redirect_to recommendations_path }
