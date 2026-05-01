@@ -16,7 +16,7 @@ class OllamaClient
 
   def initialize(url: ENV["OLLAMA_URL"], model: ENV["OLLAMA_MODEL"], http: Net::HTTP)
     @base_url = URI(url || "http://localhost:11434")
-    @model = model || "llama3"
+    @model = model || "qwen2.5:7b"
     @http = http
   end
 
