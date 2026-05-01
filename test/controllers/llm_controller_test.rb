@@ -15,26 +15,26 @@ class LlmControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "requires authentication" do
-    post llm_recommend_path
+    get llm_recommend_path
     assert_response :unauthorized
   end
 
   test "returns SSE content type" do
     sign_in_as users(:one)
-    with_fake_service { post llm_recommend_path }
+    with_fake_service { get llm_recommend_path }
     assert_equal "text/event-stream", response.media_type
   end
 
   test "streams token chunks as SSE events" do
     sign_in_as users(:one)
-    with_fake_service(chunks: ["Hello", " world"]) { post llm_recommend_path }
+    with_fake_service(chunks: ["Hello", " world"]) { get llm_recommend_path }
     assert_includes response.body, "data: Hello"
     assert_includes response.body, "data:  world"
   end
 
   test "streams DONE event at end" do
     sign_in_as users(:one)
-    with_fake_service { post llm_recommend_path }
+    with_fake_service { get llm_recommend_path }
     assert_includes response.body, "data: [DONE]"
   end
 
@@ -47,7 +47,7 @@ class LlmControllerTest < ActionDispatch::IntegrationTest
       fake
     end
     sign_in_as users(:one)
-    post llm_recommend_path, params: {clarification: "something dark"}
+    get llm_recommend_path, params: {clarification: "something dark"}
     assert_equal "something dark", received
   ensure
     RecommendationService.singleton_class.remove_method(:new)
@@ -55,7 +55,7 @@ class LlmControllerTest < ActionDispatch::IntegrationTest
 
   test "streams ERROR event when ollama unreachable" do
     sign_in_as users(:one)
-    with_fake_service(raise_error: OllamaClient::ConnectionError) { post llm_recommend_path }
+    with_fake_service(raise_error: OllamaClient::ConnectionError) { get llm_recommend_path }
     assert_includes response.body, "data: [ERROR] Could not connect to Ollama"
   end
 end

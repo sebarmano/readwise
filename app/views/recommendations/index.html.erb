@@ -13,10 +13,29 @@
   </div>
 </div>
 
-<% if @recommendations.empty? %>
-  <p class="empty-state">No recommendations yet. Ask a friend to recommend a book.</p>
-<% else %>
-  <div class="rec-list">
-    <%= render @recommendations %>
+<div class="llm-generate"
+     data-controller="llm-stream"
+     data-llm-stream-url-value="<%= llm_recommend_path %>">
+  <div class="llm-generate__row">
+    <input type="text"
+           data-clarification
+           class="input input--sm llm-generate__clarification"
+           placeholder="Any preferences? e.g. something fast-paced…" />
+    <button data-llm-stream-target="button"
+            data-action="click->llm-stream#start"
+            class="btn btn--sm btn--ghost">
+      Get Recommendations
+    </button>
   </div>
-<% end %>
+  <div data-llm-stream-target="output" class="llm-generate__output"></div>
+</div>
+
+<turbo-frame id="tab-queue">
+  <% if @recommendations.empty? %>
+    <p class="empty-state">No recommendations yet. Ask a friend or generate some above.</p>
+  <% else %>
+    <div class="rec-list">
+      <%= render @recommendations %>
+    </div>
+  <% end %>
+</turbo-frame>

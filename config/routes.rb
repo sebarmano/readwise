@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   resources :recommenders
   resources :recommendations, only: %i[index new create show update destroy]
 
-  post "llm/recommend", to: "llm#recommend", as: :llm_recommend
+  get "llm/recommend", to: "llm#recommend", as: :llm_recommend
 
   get "up" => "rails/health#show", :as => :rails_health_check
 
