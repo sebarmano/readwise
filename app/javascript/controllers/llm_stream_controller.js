@@ -7,6 +7,7 @@ export default class extends Controller {
   start() {
     this.#setLoading(true)
     this.outputTarget.textContent = ""
+    this._done = false
 
     this._source = new EventSource(this.#buildUrl())
     this._source.onmessage = (e) => this.#handle(e.data)
@@ -18,6 +19,7 @@ export default class extends Controller {
   }
 
   #handle(data) {
+    this._done = true
     if (data === "[DONE]") {
       this._source.close()
       this.#setLoading(false)
@@ -34,10 +36,10 @@ export default class extends Controller {
   }
 
   #onError() {
+    if (this._done) return
     this._source?.close()
     this.#setLoading(false)
-    this.outputTarget.textContent =
-      "Could not connect to Ollama. Is it running?"
+    this.outputTarget.textContent = "Could not connect to the server."
   }
 
   #setLoading(loading) {

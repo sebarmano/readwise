@@ -118,6 +118,43 @@
 .outcome-btn--liked:hover { background: var(--liked-soft); border-color: var(--liked); color: var(--liked); }
 .outcome-btn--meh:hover   { background: var(--meh-soft);   border-color: var(--meh);   color: var(--meh);   }
 
+/* ── LLM generate ────────────────────────────────────────────────────────────── */
+.llm-generate {
+  padding: var(--s4) var(--s8);
+  max-width: 680px;
+}
+
+.llm-generate__row {
+  display: flex;
+  gap: var(--s2);
+  align-items: center;
+}
+
+.llm-generate__clarification {
+  flex: 1;
+  height: 36px;
+  padding: 0 var(--s3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-surface);
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  color: var(--text-1);
+  outline: none;
+}
+
+.llm-generate__clarification::placeholder { color: var(--text-4); }
+.llm-generate__clarification:focus { border-color: var(--border-strong); box-shadow: 0 0 0 3px var(--focus-ring); }
+
+.llm-generate__output {
+  margin-top: var(--s3);
+  font-size: var(--text-sm);
+  color: var(--text-3);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 /* ── Sidebar badge ───────────────────────────────────────────────────────────── */
 #queue-badge { display: contents; }
 
