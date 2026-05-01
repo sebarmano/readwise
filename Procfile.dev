@@ -1,2 +1,3 @@
 web: bin/rails server
 worker: bin/jobs start
+ollama: ollama serve
