@@ -16,10 +16,11 @@ class RecommendationService
     parts.join("\n\n")
   end
 
-  def call
+  def call(&on_chunk)
     full_response = ""
     @ollama_client.chat_stream(messages: [{role: "user", content: prompt}]) do |chunk|
       full_response += chunk
+      on_chunk&.call(chunk)
     end
     parsed = JSON.parse(extract_json(full_response))
     persist(parsed)
