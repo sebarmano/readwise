@@ -112,9 +112,9 @@ born_to_run:
 
 other_users_book:
   user: two
-  title: Dune
-  author: Frank Herbert
-  year: 1965
-  genre: Sci-Fi
+  title: The Road
+  author: Cormac McCarthy
+  year: 2006
+  genre: Fiction
   rating: loved
   read_at: 2024-12-01

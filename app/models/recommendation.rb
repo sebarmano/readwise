@@ -20,6 +20,8 @@ class Recommendation < ApplicationRecord
     TasteMatchCalculator.new(recommender).call
   end
 
+  def source = recommender.recommender_type
+
   def complete!(outcome_rating:)
     update!(status: :read, outcome_rating:, read_at: Date.current)
     TasteMatchCalculator.new(recommender).call if recommender.friend?
