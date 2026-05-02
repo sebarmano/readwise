@@ -82,7 +82,7 @@ class RecommendationService
   end
 
   def extract_json(text)
-    text[/\[.*\]/m] || text
+    text[/\[.*\]/m] || "[]"
   end
 
   def persist(recs)

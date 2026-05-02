@@ -79,4 +79,16 @@ class RecommendationServiceTest < ActiveSupport::TestCase
       RecommendationService.new(users(:one), ollama_client: fake_ollama(json)).call
     end
   end
+
+  test "call does not raise when ollama returns empty response" do
+    assert_no_difference "Recommendation.count" do
+      RecommendationService.new(users(:one), ollama_client: fake_ollama("")).call
+    end
+  end
+
+  test "call does not raise when ollama returns non-json prose" do
+    assert_no_difference "Recommendation.count" do
+      RecommendationService.new(users(:one), ollama_client: fake_ollama("Sorry, I cannot help with that.")).call
+    end
+  end
 end
