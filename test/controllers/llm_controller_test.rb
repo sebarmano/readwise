@@ -55,7 +55,7 @@ class LlmControllerTest < ActionDispatch::IntegrationTest
 
   test "streams ERROR event when ollama unreachable" do
     sign_in_as users(:one)
-    with_fake_service(raise_error: OllamaClient::ConnectionError) { get llm_recommend_path }
-    assert_includes response.body, "data: [ERROR] Could not connect to Ollama"
+    with_fake_service(raise_error: OllamaClient::ConnectionError.new("model not found")) { get llm_recommend_path }
+    assert_includes response.body, "data: [ERROR] model not found"
   end
 end

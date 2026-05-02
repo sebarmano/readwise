@@ -10,8 +10,10 @@ class LlmController < ApplicationController
       response.stream.write("data: #{chunk}\n\n")
     end
     response.stream.write("data: [DONE]\n\n")
-  rescue OllamaClient::ConnectionError
-    response.stream.write("data: [ERROR] Could not connect to Ollama\n\n")
+  rescue OllamaClient::ConnectionError => e
+    response.stream.write("data: [ERROR] #{e.message}\n\n")
+  rescue => e
+    response.stream.write("data: [ERROR] #{e.message}\n\n")
   ensure
     response.stream.close
   end

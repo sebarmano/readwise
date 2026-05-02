@@ -3,7 +3,7 @@ require "test_helper"
 class OllamaClientTest < ActiveSupport::TestCase
   # --- helpers ---
 
-  def fake_http(responses = {})
+  def fake_http(responses = {}, status = "200")
     fake_conn = Object.new
     fake_conn.define_singleton_method(:read_timeout=) { |_| }
     fake_conn.define_singleton_method(:open_timeout=) { |_| }
@@ -11,11 +11,17 @@ class OllamaClientTest < ActiveSupport::TestCase
     fake_conn.define_singleton_method(:request) do |req, &blk|
       body = responses.fetch(req.path, "{}")
       resp = Object.new
+      resp.define_singleton_method(:code) { status }
       resp.define_singleton_method(:body) { body }
-      resp.define_singleton_method(:read_body) { |&b| body.each_line { |l| b.call(l) } }
+      resp.define_singleton_method(:read_body) { |&b| b ? body.each_line { |l| b.call(l) } : body }
       blk ? blk.call(resp) : resp
     end
     Class.new.tap { |c| c.define_singleton_method(:new) { |*| fake_conn } }
+  end
+
+  def stub_ollama_http_error(code:, error_message:)
+    body = {"error" => error_message}.to_json
+    fake_http({"/api/chat" => body}, code.to_s)
   end
 
   def stub_ollama_chat(response:)
@@ -140,5 +146,32 @@ class OllamaClientTest < ActiveSupport::TestCase
     OllamaClient.new(url: "http://localhost:1").tap do |client|
       assert_raises(OllamaClient::ConnectionError) { client.chat(messages: []) }
     end
+  end
+
+  test "chat_stream raises ConnectionError with ollama error message on non-200 response" do
+    http = stub_ollama_http_error(code: 404, error_message: "model 'qwen2.5:7b' not found")
+    client = OllamaClient.new(http:)
+    err = assert_raises(OllamaClient::ConnectionError) do
+      client.chat_stream(messages: [{role: "user", content: "hi"}]) { |c| }
+    end
+    assert_includes err.message, "model 'qwen2.5:7b' not found"
+  end
+
+  test "chat_stream raises ConnectionError with HTTP code when error body is not JSON" do
+    fake_conn = Object.new
+    fake_conn.define_singleton_method(:read_timeout=) { |_| }
+    fake_conn.define_singleton_method(:open_timeout=) { |_| }
+    fake_conn.define_singleton_method(:start) { |&blk| blk.call(fake_conn) }
+    fake_conn.define_singleton_method(:request) do |_req, &blk|
+      resp = Object.new
+      resp.define_singleton_method(:code) { "500" }
+      resp.define_singleton_method(:read_body) { |&b| b ? b.call("Internal Server Error") : "Internal Server Error" }
+      blk ? blk.call(resp) : resp
+    end
+    http = Class.new.tap { |c| c.define_singleton_method(:new) { |*| fake_conn } }
+    err = assert_raises(OllamaClient::ConnectionError) do
+      OllamaClient.new(http:).chat_stream(messages: []) { |c| }
+    end
+    assert_includes err.message, "HTTP 500"
   end
 end

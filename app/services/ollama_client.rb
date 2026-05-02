@@ -77,6 +77,16 @@ class OllamaClient
     buffer = ""
     connection.start do |conn|
       conn.request(req) do |response|
+        unless response.code == "200"
+          error_body = +""
+          response.read_body { |c| error_body << c }
+          message = begin
+            JSON.parse(error_body).fetch("error", "HTTP #{response.code}")
+          rescue JSON::ParserError
+            "HTTP #{response.code}"
+          end
+          raise ConnectionError, message
+        end
         response.read_body do |chunk|
           buffer += chunk
           while (line = buffer.slice!(/\A[^\n]*\n/))
