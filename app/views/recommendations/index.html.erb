@@ -90,7 +90,7 @@
     <p class="empty-state">No recommendations yet — ask a friend or use the AI above.</p>
   <% else %>
 
-    <%# ── Now reading hero ──────────────────────────────────────────────────── %>
+    <%# ── Now reading hero (only when actively reading) ────────────────────── %>
     <% if reading.any? %>
       <% featured = reading.first %>
       <% cover_hue = %w[indigo violet blue teal rose amber][featured.id % 6] %>
@@ -118,35 +118,10 @@
         <div class="now-reading-hero__cta" aria-hidden="true">›</div>
       <% end %>
       <% if reading.size > 1 %>
-        <div class="rec-list rec-list--compact">
+        <div class="rec-list" style="margin-bottom: var(--s2)">
           <%= render reading.drop(1) %>
         </div>
       <% end %>
-    <% elsif pending.any? %>
-      <% featured = pending.first %>
-      <% cover_hue = %w[indigo violet blue teal rose amber][featured.id % 6] %>
-      <% cover_src = book_cover_path(title: featured.book_title, size: "L") %>
-      <% cover_initials = featured.book_title.split.map(&:first).first(2).join.upcase %>
-      <div class="now-reading-hero now-reading-hero--next">
-        <div class="now-reading-hero__cover">
-          <div class="book-cover book-cover--md book-cover--<%= cover_hue %>">
-            <span class="book-cover__initials" aria-hidden="true"><%= cover_initials %></span>
-            <img class="book-cover__img"
-                 src="<%= cover_src %>"
-                 alt="Cover of <%= featured.book_title %>"
-                 onload="if(this.naturalWidth>20&&this.naturalHeight>20)this.classList.add('loaded')"
-                 onerror="this.remove()" />
-          </div>
-        </div>
-        <div class="now-reading-hero__body">
-          <p class="now-reading-hero__eyebrow">Up next</p>
-          <p class="now-reading-hero__title"><%= featured.book_title %></p>
-          <p class="now-reading-hero__author">by <%= featured.book_author %></p>
-        </div>
-        <%= button_to "Start reading", recommendation_path(featured),
-            params: {recommendation: {status: :reading}},
-            method: :patch, class: "btn btn--primary btn--sm now-reading-hero__start" %>
-      </div>
     <% end %>
 
     <div class="rec-sections">
