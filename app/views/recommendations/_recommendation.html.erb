@@ -2,53 +2,53 @@
   <div class="rec-card<%= ' rec-card--reading' if recommendation.reading? %>">
     <%= link_to recommendation_path(recommendation),
         class: "rec-card__overlay-link",
+        data: {"turbo-frame": "_top"},
         aria: {label: "View details for #{recommendation.book_title}"} %>
 
     <div class="rec-card__header">
       <div class="rec-source">
         <% if recommendation.recommender.friend? %>
           <span class="source-chip source-chip--friend">
-            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="5.5" cy="3.5" r="2"/>
-              <path d="M1.5 10c0-2.21 1.79-4 4-4s4 1.79 4 4"/>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="5" cy="3" r="1.75"/>
+              <path d="M1 9.5c0-2.21 1.79-4 4-4s4 1.79 4 4"/>
             </svg>
             From <%= recommendation.recommender.name %>
           </span>
           <% match = recommendation.book_type == "fiction" ? recommendation.recommender.fiction_match : recommendation.recommender.nonfiction_match %>
           <% if match %>
-            <span class="source-match source-match--<%= match_bar_class(match) %>"><%= (match * 100).round %>% taste match</span>
+            <span class="source-match source-match--<%= match_bar_class(match) %>"><%= (match * 100).round %>% match</span>
           <% end %>
         <% else %>
           <span class="source-chip source-chip--ai">
-            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5.5 1L6.55 4.2L9.5 5.5L6.55 6.8L5.5 10L4.45 6.8L1.5 5.5L4.45 4.2L5.5 1Z" fill="currentColor"/>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 .5 6 3.8 9.5 5 6 6.2 5 9.5 4 6.2.5 5 4 3.8Z" fill="currentColor"/>
             </svg>
             AI Pick
           </span>
         <% end %>
       </div>
       <div class="rec-pills">
-        <span class="status-pill <%= recommendation.status %>"><%= recommendation.status.humanize %></span>
+        <span class="status-pill status-pill--<%= recommendation.status %>"><%= recommendation.status.humanize %></span>
         <% if recommendation.outcome_rating.present? %>
           <span class="outcome-pill <%= recommendation.outcome_rating %>"><%= recommendation.outcome_rating.humanize %></span>
         <% end %>
       </div>
     </div>
 
-    <div class="rec-card__inner">
+    <div class="rec-card__body">
       <div class="rec-card__cover" data-cover-wrap>
         <img src="https://covers.openlibrary.org/b/title/<%= CGI.escape(recommendation.book_title) %>-M.jpg"
              alt=""
              loading="lazy"
+             onload="if(this.naturalWidth<10||this.naturalHeight<10)this.closest('[data-cover-wrap]').style.display='none'"
              onerror="this.closest('[data-cover-wrap]').style.display='none'" />
       </div>
-      <div class="rec-card__text">
-        <p class="rec-card__title"><%= recommendation.book_title %></p>
-        <p class="rec-card__author"><%= recommendation.book_author %></p>
-        <% if recommendation.reason.present? %>
-          <p class="rec-card__reason"><%= recommendation.reason %></p>
-        <% end %>
-      </div>
+      <p class="rec-card__title"><%= recommendation.book_title %></p>
+      <p class="rec-card__author"><%= recommendation.book_author %></p>
+      <% if recommendation.reason.present? %>
+        <p class="rec-card__reason"><%= recommendation.reason %></p>
+      <% end %>
     </div>
 
     <% if recommendation.read? && recommendation.outcome_rating.blank? %>

@@ -80,85 +80,120 @@ details[open] .rec-section__summary { color: var(--text-3); }
 
 /* ── Recommendation card ─────────────────────────────────────────────────── */
 .rec-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
+  background: #FEFDF9;
+  border: 1px solid rgba(0,0,0,.08);
   border-radius: var(--r-lg);
   padding: var(--s5);
   display: flex;
   flex-direction: column;
   gap: var(--s3);
-  box-shadow: var(--shadow-xs);
-  transition: box-shadow var(--ease), border-color var(--ease);
+  box-shadow: 0 1px 4px rgba(0,0,0,.055), 0 1px 2px rgba(0,0,0,.035);
+  transition: box-shadow var(--ease), transform var(--ease), border-color var(--ease);
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
 
-.rec-card:hover { box-shadow: var(--shadow-sm); }
+.rec-card:hover {
+  box-shadow: 0 4px 14px rgba(0,0,0,.09), 0 1px 3px rgba(0,0,0,.04);
+  transform: translateY(-1px);
+  border-color: rgba(0,0,0,.12);
+}
 
 .rec-card--reading {
-  border-left-width: 3px;
-  border-left-color: var(--liked);
+  background: #FFFCF2;
+  border-color: rgba(217,119,6,.2);
+  border-left: 3px solid var(--liked);
   padding-left: calc(var(--s5) - 2px);
 }
 
 .rec-card__header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: var(--s3);
 }
 
-/* ── Source chip ─────────────────────────────────────────────────────────── */
+/* ── Source chip — flat typographic style ────────────────────────────────── */
 .rec-source {
   display: flex;
-  flex-direction: column;
-  gap: 3px;
+  align-items: center;
+  gap: var(--s2);
   min-width: 0;
+  flex-wrap: wrap;
 }
 
 .source-chip {
   display: inline-flex;
   align-items: center;
-  gap: var(--s1);
-  height: 22px;
-  padding: 0 var(--s2);
-  border-radius: var(--r-sm);
-  background: var(--bg-subtle);
-  border: 1px solid var(--border);
-  font-size: var(--text-xs);
-  font-weight: 500;
-  color: var(--text-2);
+  gap: 5px;
+  height: auto;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-3);
+  letter-spacing: .08em;
+  text-transform: uppercase;
   white-space: nowrap;
-  max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 200px;
 }
 
-.source-chip svg { flex-shrink: 0; }
+.source-chip svg { flex-shrink: 0; opacity: .7; }
 
 .source-chip--ai {
-  background: rgba(99,102,241,.07);
-  border-color: rgba(99,102,241,.22);
   color: #6366F1;
+  background: transparent;
+  border: none;
+}
+
+.source-chip--ai svg { opacity: 1; }
+
+.source-chip--friend {
+  color: var(--text-3);
 }
 
 .source-match {
-  font-size: var(--text-xs);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .04em;
   color: var(--text-4);
-  padding-left: 2px;
 }
 
 .source-match--green { color: var(--loved); }
 .source-match--amber { color: var(--liked); }
-.source-match--red   { color: var(--meh);   }
+.source-match--red   { color: var(--meh); }
 .source-match--none  { display: none; }
 
-/* ── Status / outcome pills ──────────────────────────────────────────────── */
+/* ── Status + outcome pills ──────────────────────────────────────────────── */
 .rec-pills {
   display: flex;
-  gap: var(--s2);
+  gap: var(--s1);
   align-items: center;
   flex-shrink: 0;
+}
+
+.status-pill {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text-4);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  padding: 2px 7px;
+  line-height: 16px;
+}
+
+.status-pill--reading {
+  color: var(--liked);
+  background: var(--liked-soft);
+  border-color: rgba(217,119,6,.2);
 }
 
 .outcome-pill {
@@ -167,9 +202,9 @@ details[open] .rec-section__summary { color: var(--text-3); }
   height: 20px;
   padding: 0 var(--s2);
   border-radius: var(--r-sm);
-  font-size: var(--text-xs);
-  font-weight: 600;
-  letter-spacing: .03em;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .05em;
   text-transform: uppercase;
 }
 
@@ -177,28 +212,56 @@ details[open] .rec-section__summary { color: var(--text-3); }
 .outcome-pill.liked { background: var(--liked-soft); color: var(--liked); }
 .outcome-pill.meh   { background: var(--meh-soft);   color: var(--meh);   }
 
-/* ── Card body ───────────────────────────────────────────────────────────── */
+/* ── Card body — float layout for cover ─────────────────────────────────── */
+.rec-card__body {
+  overflow: hidden; /* contains the float */
+}
+
+.rec-card__cover {
+  float: right;
+  width: 52px;
+  height: 78px;
+  margin: 2px 0 var(--s2) var(--s3);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 2px 4px 14px rgba(0,0,0,.18), 0 1px 4px rgba(0,0,0,.1);
+  background: var(--bg-subtle);
+  flex-shrink: 0;
+}
+
+.rec-card__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .rec-card__title {
   font-size: var(--text-lg);
   font-weight: 700;
   color: var(--text-1);
-  line-height: 1.3;
-  letter-spacing: -.01em;
+  line-height: 1.25;
+  letter-spacing: -.02em;
 }
 
 .rec-card__author {
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
+  font-style: italic;
   color: var(--text-3);
-  margin-top: -2px;
+  margin-top: 3px;
 }
 
 .rec-card__reason {
   font-size: var(--text-sm);
   color: var(--text-2);
-  line-height: 1.65;
-  margin-top: var(--s1);
+  line-height: 1.7;
+  margin-top: var(--s2);
   padding-left: var(--s3);
-  border-left: 2px solid var(--border);
+  border-left: 2px solid rgba(0,0,0,.09);
+}
+
+.rec-card--reading .rec-card__reason {
+  border-left-color: rgba(217,119,6,.3);
 }
 
 /* ── Card actions ────────────────────────────────────────────────────────── */
@@ -206,19 +269,20 @@ details[open] .rec-section__summary { color: var(--text-3); }
   display: flex;
   gap: var(--s2);
   padding-top: var(--s3);
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(0,0,0,.06);
   margin-top: var(--s1);
 }
 
 .rec-card__actions .btn {
-  height: 36px;
+  height: 34px;
   padding: 0 var(--s4);
+  font-size: var(--text-sm);
 }
 
 /* ── Outcome form ────────────────────────────────────────────────────────── */
 .outcome-form {
   padding-top: var(--s3);
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(0,0,0,.06);
   margin-top: var(--s1);
 }
 
@@ -236,8 +300,9 @@ details[open] .rec-section__summary { color: var(--text-3); }
 
 .outcome-btn {
   border-radius: var(--r-pill);
-  height: 36px;
+  height: 34px;
   padding: 0 var(--s4);
+  font-size: var(--text-sm);
 }
 
 .outcome-btn--loved:hover { background: var(--loved-soft); border-color: var(--loved); color: var(--loved); }
@@ -480,9 +545,7 @@ details[open] .rec-section__summary { color: var(--text-3); }
   animation: rec-card-in 0.35s var(--ease) both;
 }
 
-/* ── Clickable card overlay link (issue #59) ─────────────────────────────── */
-.rec-card { position: relative; }
-
+/* ── Clickable card overlay link ─────────────────────────────────────────── */
 .rec-card__overlay-link {
   position: absolute;
   inset: 0;
@@ -491,37 +554,9 @@ details[open] .rec-section__summary { color: var(--text-3); }
 }
 
 .rec-card__header,
-.rec-card__inner,
 .rec-card__body,
 .rec-card__actions,
 .outcome-form { position: relative; z-index: 1; }
-
-/* ── Book cover on cards (issue #58) ─────────────────────────────────────── */
-.rec-card__cover {
-  width: 44px;
-  min-width: 44px;
-  height: 64px;
-  border-radius: var(--r-sm);
-  overflow: hidden;
-  background: var(--bg-subtle);
-  border: 1px solid var(--border);
-  flex-shrink: 0;
-}
-
-.rec-card__cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.rec-card__inner {
-  display: flex;
-  gap: var(--s3);
-  align-items: flex-start;
-}
-
-.rec-card__text { min-width: 0; flex: 1; }
 
 /* ── Recommendation detail page (issue #59) ──────────────────────────────── */
 .rec-detail {
