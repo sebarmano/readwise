@@ -46,9 +46,9 @@ class RecommendationServiceTest < ActiveSupport::TestCase
 
   test "call persists parsed recommendations" do
     json = '[{"title":"The Left Hand of Darkness","author":"Ursula K. Le Guin","genre":"Sci-Fi","reason":"Matches your love of epic fiction"}]'
-    assert_difference "Recommendation.count", 1 do
-      RecommendationService.new(users(:one), ollama_client: fake_ollama(json)).call
-    end
+    RecommendationService.new(users(:one), ollama_client: fake_ollama(json)).call
+    assert users(:one).recommendations.joins(:recommender)
+      .where(recommenders: {recommender_type: :claude}, book_title: "The Left Hand of Darkness").exists?
   end
 
   test "call links recommendation to claude recommender" do
@@ -68,16 +68,17 @@ class RecommendationServiceTest < ActiveSupport::TestCase
 
   test "call persists multiple recommendations" do
     json = '[{"title":"A","author":"B","genre":"Fiction","reason":"r1"},{"title":"C","author":"D","genre":"Fiction","reason":"r2"}]'
-    assert_difference "Recommendation.count", 2 do
-      RecommendationService.new(users(:one), ollama_client: fake_ollama(json)).call
-    end
+    RecommendationService.new(users(:one), ollama_client: fake_ollama(json)).call
+    claude_pending = users(:one).recommendations.joins(:recommender)
+      .where(recommenders: {recommender_type: :claude}, status: :pending)
+    assert_equal 2, claude_pending.count
   end
 
   test "call tolerates json wrapped in markdown fences" do
     json = "```json\n[{\"title\":\"Dune\",\"author\":\"Herbert\",\"genre\":\"Sci-Fi\",\"reason\":\"Epic\"}]\n```"
-    assert_difference "Recommendation.count", 1 do
-      RecommendationService.new(users(:one), ollama_client: fake_ollama(json)).call
-    end
+    RecommendationService.new(users(:one), ollama_client: fake_ollama(json)).call
+    assert users(:one).recommendations.joins(:recommender)
+      .where(recommenders: {recommender_type: :claude}, book_title: "Dune").exists?
   end
 
   test "call does not raise when ollama returns empty response" do

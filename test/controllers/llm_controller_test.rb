@@ -25,11 +25,11 @@ class LlmControllerTest < ActionDispatch::IntegrationTest
     assert_equal "text/event-stream", response.media_type
   end
 
-  test "streams token chunks as SSE events" do
+  test "recommend endpoint streams only the DONE signal, not intermediate chunks" do
     sign_in_as users(:one)
     with_fake_service(chunks: ["Hello", " world"]) { get llm_recommend_path }
-    assert_includes response.body, "data: Hello"
-    assert_includes response.body, "data:  world"
+    assert_includes response.body, "data: [DONE]"
+    assert_not_includes response.body, "data: Hello"
   end
 
   test "streams DONE event at end" do

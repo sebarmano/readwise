@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   resources :recommenders
   resources :recommendations, only: %i[index new create show update destroy]
 
+  get "llm/question", to: "llm#question", as: :llm_question
   get "llm/recommend", to: "llm#recommend", as: :llm_recommend
 
   get "up" => "rails/health#show", :as => :rails_health_check

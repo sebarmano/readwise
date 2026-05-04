@@ -13,29 +13,118 @@
   </div>
 </div>
 
-<div class="llm-generate"
-     data-controller="llm-stream"
-     data-llm-stream-url-value="<%= llm_recommend_path %>">
-  <div class="llm-generate__row">
+<div class="ai-panel"
+     data-controller="chat"
+     data-chat-question-url-value="<%= llm_question_path %>"
+     data-chat-recommend-url-value="<%= llm_recommend_path %>"
+     data-chat-state="idle">
+  <div class="ai-panel__header">
+    <span class="ai-panel__icon" aria-hidden="true">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6.5 1.5L7.55 5.2L11 6.5L7.55 7.8L6.5 11.5L5.45 7.8L2 6.5L5.45 5.2L6.5 1.5Z" fill="currentColor"/>
+      </svg>
+    </span>
+    <span class="ai-panel__label">Ask for a recommendation</span>
+  </div>
+
+  <div class="ai-chat" data-chat-target="chat" aria-live="polite"></div>
+
+  <div class="ai-panel__input-row" data-chat-target="inputRow">
     <input type="text"
-           data-clarification
-           class="llm-generate__clarification"
-           placeholder="Any preferences? e.g. something fast-paced…" />
-    <button data-llm-stream-target="button"
-            data-action="click->llm-stream#start"
-            class="btn btn--sm btn--ghost">
-      Get Recommendations
+           data-chat-target="input"
+           class="ai-panel__input"
+           placeholder="Any mood or genre in mind? (optional)"
+           data-action="keydown.enter->chat#ask"
+           aria-label="Optional preferences before getting a recommendation" />
+    <button data-action="click->chat#ask"
+            class="btn btn--sm btn--primary">
+      Ask
     </button>
   </div>
-  <div data-llm-stream-target="output" class="llm-generate__output"></div>
+
+  <div class="ai-panel__answer-row" data-chat-target="answerRow">
+    <input type="text"
+           data-chat-target="answerInput"
+           class="ai-panel__input"
+           placeholder="Type your answer…"
+           data-action="keydown.enter->chat#send"
+           aria-label="Answer" />
+    <button data-action="click->chat#send"
+            class="btn btn--sm btn--primary">
+      Send
+    </button>
+  </div>
+
+  <div class="ai-panel__feedback-row" data-chat-target="feedbackRow">
+    <p class="ai-panel__feedback-hint">Want different picks? Tell me what to change:</p>
+    <div class="ai-panel__feedback-inputs">
+      <input type="text"
+             data-chat-target="feedbackInput"
+             class="ai-panel__input"
+             placeholder="e.g. more modern, less dark, shorter…"
+             data-action="keydown.enter->chat#refine"
+             aria-label="Feedback on recommendations" />
+      <button data-action="click->chat#refine"
+              class="btn btn--sm btn--ghost">
+        Refine
+      </button>
+      <button data-action="click->chat#finish"
+              class="btn btn--sm btn--primary">
+        Done
+      </button>
+    </div>
+  </div>
+
+  <div class="ai-panel__restart">
+    <button data-action="click->chat#reset">Ask again</button>
+  </div>
 </div>
 
 <turbo-frame id="tab-queue">
-  <% if @recommendations.empty? %>
-    <p class="empty-state">No recommendations yet. Ask a friend or generate some above.</p>
+  <% grouped = @recommendations.group_by(&:status)
+     reading  = grouped["reading"]  || []
+     pending  = grouped["pending"]  || []
+     history  = (grouped["read"] || []) + (grouped["skipped"] || []) %>
+
+  <% if reading.empty? && pending.empty? && history.empty? %>
+    <p class="empty-state">No recommendations yet — ask a friend or use the AI above.</p>
   <% else %>
-    <div class="rec-list">
-      <%= render @recommendations %>
+    <div class="rec-sections">
+      <% if reading.any? %>
+        <section class="rec-section">
+          <h2 class="rec-section__label">
+            Now Reading
+            <span class="rec-section__count"><%= reading.size %></span>
+          </h2>
+          <div class="rec-list">
+            <%= render reading %>
+          </div>
+        </section>
+      <% end %>
+
+      <% if pending.any? %>
+        <section class="rec-section">
+          <h2 class="rec-section__label">
+            Up Next
+            <span class="rec-section__count"><%= pending.size %></span>
+          </h2>
+          <div class="rec-list">
+            <%= render pending %>
+          </div>
+        </section>
+      <% end %>
+
+      <% if history.any? %>
+        <details class="rec-section rec-section--history">
+          <summary class="rec-section__summary">
+            History
+            <span class="rec-section__count"><%= history.size %></span>
+          </summary>
+          <div class="rec-list">
+            <%= render history %>
+          </div>
+        </details>
+      <% end %>
     </div>
   <% end %>
 </turbo-frame>

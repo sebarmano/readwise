@@ -1,9 +1,10 @@
 require "json"
 
 class RecommendationService
-  def initialize(user, clarification: nil, ollama_client: OllamaClient.new)
+  def initialize(user, clarification: nil, messages: [], ollama_client: OllamaClient.new)
     @user = user
     @clarification = clarification
+    @messages = messages
     @ollama_client = ollama_client
   end
 
@@ -11,16 +12,16 @@ class RecommendationService
     parts = [reading_history_section]
     parts << claude_recs_section if claude_recs.any?
     parts << friend_recs_section if pending_friend_recs.any?
-    parts << "## Clarification\n#{@clarification}" if @clarification
+    parts << "## User preference\n#{@clarification}" if @clarification
+    parts << conversation_section if @messages.any?
     parts << instructions
     parts.join("\n\n")
   end
 
-  def call(&on_chunk)
+  def call
     full_response = ""
     @ollama_client.chat_stream(messages: [{role: "user", content: prompt}]) do |chunk|
       full_response += chunk
-      on_chunk&.call(chunk)
     end
     parsed = JSON.parse(extract_json(full_response))
     persist(parsed)
@@ -50,7 +51,12 @@ class RecommendationService
   def instructions
     <<~PROMPT.strip
       ## Task
-      Suggest 3–5 books based on the reading history above. Do NOT suggest books already listed.
+      Suggest 3–5 books based on the reading history and conversation above.
+      Rules:
+      - Do NOT suggest books already listed in the reading history.
+      - Do NOT suggest books by the same author if the user has already read 3 or more books by that author.
+      - When the user asks for "something like X by Author Y", recommend books by OTHER authors in a similar style or genre — not more books by Author Y.
+      - Prioritise variety: different authors, different eras (unless the user asked for a specific era).
       Return ONLY a JSON array, no other text:
       [{"title":"...","author":"...","genre":"...","reason":"...","source":"claude"}]
     PROMPT
@@ -85,8 +91,17 @@ class RecommendationService
     text[/\[.*\]/m] || "[]"
   end
 
+  def conversation_section
+    lines = @messages.map do |m|
+      "#{(m[:role].to_s == "assistant") ? "Guide" : "User"}: #{m[:content]}"
+    end
+    "## Conversation\n#{lines.join("\n")}"
+  end
+
   def persist(recs)
+    return if recs.empty?
     recommender = claude_recommender
+    @user.recommendations.where(recommender: recommender, status: :pending).destroy_all
     recs.each do |rec|
       @user.recommendations.create!(
         recommender: recommender,

@@ -46,6 +46,26 @@ class RecommendationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  # show
+  test "show redirects to sign in when unauthenticated" do
+    get recommendation_path(recommendations(:marco_pending))
+    assert_redirected_to new_session_path
+  end
+
+  test "show renders the recommendation detail page" do
+    sign_in_as users(:one)
+    get recommendation_path(recommendations(:marco_pending))
+    assert_response :ok
+    assert_select "h1", text: /Dune/
+    assert_select "p", text: /Frank Herbert/
+  end
+
+  test "show returns 404 for another user recommendation" do
+    sign_in_as users(:two)
+    get recommendation_path(recommendations(:marco_pending))
+    assert_response :not_found
+  end
+
   # new / create
   test "new redirects to sign in when unauthenticated" do
     get new_recommendation_path

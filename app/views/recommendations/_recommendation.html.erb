@@ -1,16 +1,30 @@
 <turbo-frame id="rec-<%= recommendation.id %>">
-  <div class="rec-card">
+  <div class="rec-card<%= ' rec-card--reading' if recommendation.reading? %>">
+    <%= link_to recommendation_path(recommendation),
+        class: "rec-card__overlay-link",
+        aria: {label: "View details for #{recommendation.book_title}"} %>
+
     <div class="rec-card__header">
       <div class="rec-source">
         <% if recommendation.recommender.friend? %>
-          <span class="source-dot source-dot--friend">👤</span>
+          <span class="source-chip source-chip--friend">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="5.5" cy="3.5" r="2"/>
+              <path d="M1.5 10c0-2.21 1.79-4 4-4s4 1.79 4 4"/>
+            </svg>
+            From <%= recommendation.recommender.name %>
+          </span>
+          <% match = recommendation.book_type == "fiction" ? recommendation.recommender.fiction_match : recommendation.recommender.nonfiction_match %>
+          <% if match %>
+            <span class="source-match source-match--<%= match_bar_class(match) %>"><%= (match * 100).round %>% taste match</span>
+          <% end %>
         <% else %>
-          <span class="source-dot source-dot--claude">◈</span>
-        <% end %>
-        <span class="source-name"><%= recommendation.recommender.name %></span>
-        <% match = recommendation.book_type == "fiction" ? recommendation.recommender.fiction_match : recommendation.recommender.nonfiction_match %>
-        <% if recommendation.recommender.friend? && match %>
-          <span class="match-mini match-mini--<%= match_bar_class(match) %>"><%= (match * 100).round %>% match</span>
+          <span class="source-chip source-chip--ai">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5.5 1L6.55 4.2L9.5 5.5L6.55 6.8L5.5 10L4.45 6.8L1.5 5.5L4.45 4.2L5.5 1Z" fill="currentColor"/>
+            </svg>
+            AI Pick
+          </span>
         <% end %>
       </div>
       <div class="rec-pills">
@@ -21,12 +35,20 @@
       </div>
     </div>
 
-    <div class="rec-card__body">
-      <p class="rec-card__title"><%= recommendation.book_title %></p>
-      <p class="rec-card__author"><%= recommendation.book_author %></p>
-      <% if recommendation.reason.present? %>
-        <p class="rec-card__reason"><%= recommendation.reason %></p>
-      <% end %>
+    <div class="rec-card__inner">
+      <div class="rec-card__cover" data-cover-wrap>
+        <img src="https://covers.openlibrary.org/b/title/<%= CGI.escape(recommendation.book_title) %>-M.jpg"
+             alt=""
+             loading="lazy"
+             onerror="this.closest('[data-cover-wrap]').style.display='none'" />
+      </div>
+      <div class="rec-card__text">
+        <p class="rec-card__title"><%= recommendation.book_title %></p>
+        <p class="rec-card__author"><%= recommendation.book_author %></p>
+        <% if recommendation.reason.present? %>
+          <p class="rec-card__reason"><%= recommendation.reason %></p>
+        <% end %>
+      </div>
     </div>
 
     <% if recommendation.read? && recommendation.outcome_rating.blank? %>
