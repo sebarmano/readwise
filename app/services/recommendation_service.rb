@@ -52,11 +52,20 @@ class RecommendationService
     <<~PROMPT.strip
       ## Task
       Suggest 3–5 books based on the reading history and conversation above.
+
       Rules:
-      - Do NOT suggest books already listed in the reading history.
-      - Do NOT suggest books by the same author if the user has already read 3 or more books by that author.
-      - When the user asks for "something like X by Author Y", recommend books by OTHER authors in a similar style or genre — not more books by Author Y.
-      - Prioritise variety: different authors, different eras (unless the user asked for a specific era).
+      - Do NOT suggest books already in the reading history.
+      - Respect author preferences expressed in the conversation. If not discussed, include a mix
+        of authors they know and new discoveries.
+      - When asked for "something like X by Author Y", recommend other authors in a similar style.
+      - Prioritise variety: different authors, eras, and styles unless the user asked otherwise.
+
+      For each book's "reason" field (max 60 words, must have BOTH parts):
+      Part 1 — Personal bridge: name one specific book from their reading history that creates
+        a clear through-line. E.g. "If you loved [Title], this delivers the same [quality]..."
+      Part 2 — Social proof: add one concrete validation signal such as a major award won,
+        film/TV adaptation, Goodreads rating with count, NYT bestseller duration, or cult status.
+
       Return ONLY a JSON array, no other text:
       [{"title":"...","author":"...","genre":"...","reason":"...","source":"claude"}]
     PROMPT

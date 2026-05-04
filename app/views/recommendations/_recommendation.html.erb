@@ -1,55 +1,74 @@
+<% cover_initials = recommendation.book_title.split.map(&:first).first(2).join.upcase %>
+<% cover_hue = %w[indigo violet blue teal rose amber][recommendation.id % 6] %>
+<% match = if recommendation.recommender.friend?
+    recommendation.book_type == "fiction" ? recommendation.recommender.fiction_match : recommendation.recommender.nonfiction_match
+  end %>
+
 <turbo-frame id="rec-<%= recommendation.id %>">
-  <div class="rec-card<%= ' rec-card--reading' if recommendation.reading? %>">
+  <div class="rec-card<%= ' rec-card--reading' if recommendation.reading? %><%= ' rec-card--done' if recommendation.read? || recommendation.skipped? %>">
+
     <%= link_to recommendation_path(recommendation),
-        class: "rec-card__overlay-link",
+        class: "rec-card__link",
         data: {"turbo-frame": "_top"},
-        aria: {label: "View details for #{recommendation.book_title}"} %>
+        aria: {label: "View details for #{recommendation.book_title}"} do %>
 
-    <div class="rec-card__header">
-      <div class="rec-source">
-        <% if recommendation.recommender.friend? %>
-          <span class="source-chip source-chip--friend">
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="5" cy="3" r="1.75"/>
-              <path d="M1 9.5c0-2.21 1.79-4 4-4s4 1.79 4 4"/>
-            </svg>
-            From <%= recommendation.recommender.name %>
-          </span>
-          <% match = recommendation.book_type == "fiction" ? recommendation.recommender.fiction_match : recommendation.recommender.nonfiction_match %>
-          <% if match %>
-            <span class="source-match source-match--<%= match_bar_class(match) %>"><%= (match * 100).round %>% match</span>
-          <% end %>
-        <% else %>
-          <span class="source-chip source-chip--ai">
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5 .5 6 3.8 9.5 5 6 6.2 5 9.5 4 6.2.5 5 4 3.8Z" fill="currentColor"/>
-            </svg>
-            AI Pick
-          </span>
-        <% end %>
-      </div>
-      <div class="rec-pills">
-        <span class="status-pill status-pill--<%= recommendation.status %>"><%= recommendation.status.humanize %></span>
-        <% if recommendation.outcome_rating.present? %>
-          <span class="outcome-pill <%= recommendation.outcome_rating %>"><%= recommendation.outcome_rating.humanize %></span>
-        <% end %>
-      </div>
-    </div>
-
-    <div class="rec-card__body">
-      <div class="rec-card__cover" data-cover-wrap>
-        <img src="https://covers.openlibrary.org/b/title/<%= CGI.escape(recommendation.book_title) %>-M.jpg"
+      <div class="book-cover book-cover--sm book-cover--<%= cover_hue %>">
+        <span class="book-cover__initials" aria-hidden="true"><%= cover_initials %></span>
+        <img class="book-cover__img"
+             src="<%= book_cover_path(title: recommendation.book_title, size: "M") %>"
              alt=""
              loading="lazy"
-             onload="if(this.naturalWidth<10||this.naturalHeight<10)this.closest('[data-cover-wrap]').style.display='none'"
-             onerror="this.closest('[data-cover-wrap]').style.display='none'" />
+             onload="if(this.naturalWidth>20&&this.naturalHeight>20)this.classList.add('loaded')"
+             onerror="this.remove()" />
       </div>
-      <p class="rec-card__title"><%= recommendation.book_title %></p>
-      <p class="rec-card__author"><%= recommendation.book_author %></p>
-      <% if recommendation.reason.present? %>
-        <p class="rec-card__reason"><%= recommendation.reason %></p>
-      <% end %>
-    </div>
+
+      <div class="rec-card__body">
+        <div class="rec-card__top">
+          <div class="rec-source">
+            <% if recommendation.recommender.friend? %>
+              <span class="source-chip source-chip--friend">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="5" cy="3" r="1.75"/>
+                  <path d="M1 9.5c0-2.21 1.79-4 4-4s4 1.79 4 4"/>
+                </svg>
+                <%= recommendation.recommender.name %>
+              </span>
+            <% else %>
+              <span class="source-chip source-chip--ai">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                  <path d="M5 .5 6 3.8 9.5 5 6 6.2 5 9.5 4 6.2.5 5 4 3.8Z" fill="currentColor"/>
+                </svg>
+                AI Pick
+              </span>
+            <% end %>
+          </div>
+          <div class="rec-card__pills">
+            <span class="status-pill status-pill--<%= recommendation.status %>"><%= recommendation.status.humanize %></span>
+            <% if recommendation.outcome_rating.present? %>
+              <span class="outcome-pill <%= recommendation.outcome_rating %>"><%= recommendation.outcome_rating.humanize %></span>
+            <% end %>
+          </div>
+        </div>
+
+        <p class="rec-card__title"><%= recommendation.book_title %></p>
+        <p class="rec-card__author"><%= recommendation.book_author %></p>
+
+        <% if match %>
+          <div class="rec-card__match">
+            <div class="rec-card__match-track">
+              <div class="rec-card__match-fill rec-card__match-fill--<%= match_bar_class(match) %>"
+                   style="width:<%= (match * 100).round %>%"></div>
+            </div>
+            <span class="rec-card__match-pct source-match--<%= match_bar_class(match) %>"><%= (match * 100).round %>% match</span>
+          </div>
+        <% end %>
+
+        <% if recommendation.reason.present? %>
+          <p class="rec-card__reason"><%= truncate(recommendation.reason, length: 110) %></p>
+        <% end %>
+      </div>
+
+    <% end %>
 
     <% if recommendation.read? && recommendation.outcome_rating.blank? %>
       <div class="outcome-form">
@@ -85,5 +104,6 @@
             method: :patch, class: "btn btn--sm btn--ghost btn--danger" %>
       </div>
     <% end %>
+
   </div>
 </turbo-frame>

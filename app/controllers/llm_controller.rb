@@ -23,6 +23,18 @@ class LlmController < ApplicationController
     end
   end
 
+  def book_chat
+    sse_stream do
+      BookChatService.new(
+        title: params[:title].to_s,
+        author: params[:author].to_s,
+        messages: parsed_messages
+      ).call do |chunk|
+        response.stream.write("data: #{chunk}\n\n")
+      end
+    end
+  end
+
   private
 
   def parsed_messages

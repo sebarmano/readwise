@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-const MAX_TURNS = 3
+const MAX_TURNS = 10
 
 export default class extends Controller {
   static targets = [

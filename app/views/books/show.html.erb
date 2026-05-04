@@ -1,30 +1,68 @@
-<div class="book-detail">
-  <div class="book-detail__header">
-    <span class="rating-dot rating-dot--<%= @book.rating %>"></span>
-    <span class="rating-label"><%= @book.rating.capitalize %></span>
-    <% if @book.year.present? %>
-      <span class="book-year"><%= @book.year %></span>
+<% content_for :head do %>
+  <%= stylesheet_link_tag "books", "data-turbo-track": "reload" %>
+<% end %>
+
+<% cover_initials = @book.title.split.map(&:first).first(2).join.upcase %>
+<% cover_hue = %w[indigo violet blue teal rose amber][@book.id % 6] %>
+<% cover_src = "https://covers.openlibrary.org/b/title/#{ERB::Util.url_encode(@book.title)}-L.jpg" %>
+
+<div class="book-show">
+  <div class="book-show__back">
+    <%= link_to books_path, class: "back-link" do %>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 11L5 7l4-4"/>
+      </svg>
+      Library
     <% end %>
   </div>
 
-  <h1 class="book-detail__title"><%= @book.title %></h1>
-  <p class="book-detail__author"><%= @book.author %></p>
-
-  <% if @book.genre.present? %>
-    <div class="book-tags">
-      <span class="tag"><%= @book.genre %></span>
+  <div class="book-show__hero">
+    <div class="book-cover book-cover--lg book-cover--<%= cover_hue %>">
+      <span class="book-cover__initials" aria-hidden="true"><%= cover_initials %></span>
+      <img class="book-cover__img"
+           src="<%= cover_src %>"
+           alt="Cover of <%= @book.title %>"
+           onload="if(this.naturalWidth>20&&this.naturalHeight>20)this.classList.add('loaded')"
+           onerror="this.remove()" />
     </div>
-  <% end %>
+
+    <div class="book-show__info">
+      <div class="book-show__chips">
+        <span class="rating-badge rating-badge--<%= @book.rating %>"><%= @book.rating.humanize %></span>
+        <% if @book.genre.present? %>
+          <span class="tag"><%= @book.genre %></span>
+        <% end %>
+        <% if @book.year.present? %>
+          <span class="book-year"><%= @book.year %></span>
+        <% end %>
+      </div>
+
+      <h1 class="book-show__title"><%= @book.title %></h1>
+      <p class="book-show__author">by <%= @book.author %></p>
+
+      <div class="book-show__actions">
+        <%= link_to "Edit", edit_book_path(@book), class: "btn btn--ghost" %>
+        <%= button_to "Delete", book_path(@book),
+            method: :delete,
+            class: "btn btn--ghost btn--danger",
+            form: { data: { turbo_confirm: "Remove #{@book.title} from your library?" } } %>
+      </div>
+    </div>
+  </div>
 
   <% if @book.notes.present? %>
-    <div class="book-detail__notes">
-      <p><%= @book.notes %></p>
+    <div class="book-show__section">
+      <h2 class="book-show__section-label">Notes</h2>
+      <p class="book-show__notes"><%= @book.notes %></p>
     </div>
   <% end %>
 
-  <div class="book-detail__actions">
-    <%= link_to "Edit", edit_book_path(@book), class: "btn btn--secondary" %>
-    <%= button_to "Delete book", book_path(@book), method: :delete, class: "btn btn--danger", form: {data: {turbo_confirm: "Remove #{@book.title} from your library?"}} %>
-    <%= link_to "Back to Library", books_path, class: "btn btn--ghost" %>
+  <div class="book-show__footer">
+    <% if @book.read_at.present? %>
+      <span>Read <%= @book.read_at.strftime("%B %-d, %Y") %></span>
+    <% end %>
+    <% if @book.year.present? %>
+      <span>Published <%= @book.year %></span>
+    <% end %>
   </div>
 </div>

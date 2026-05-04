@@ -11,8 +11,11 @@ Rails.application.routes.draw do
   resources :recommenders
   resources :recommendations, only: %i[index new create show update destroy]
 
+  get "book_cover" => "book_covers#show", :as => :book_cover
+
   get "llm/question", to: "llm#question", as: :llm_question
   get "llm/recommend", to: "llm#recommend", as: :llm_recommend
+  get "llm/book_chat", to: "llm#book_chat", as: :llm_book_chat
 
   get "up" => "rails/health#show", :as => :rails_health_check
 

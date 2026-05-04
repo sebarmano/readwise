@@ -35,7 +35,8 @@ class RecommendationsController < ApplicationController
   end
 
   def show
-    @recommendation = Current.user.recommendations.find(params[:id])
+    @recommendation = Current.user.recommendations.includes(:recommender).find(params[:id])
+    @book_meta = BookMetadataService.new(@recommendation.book_title, @recommendation.book_author).call
   end
 
   def update

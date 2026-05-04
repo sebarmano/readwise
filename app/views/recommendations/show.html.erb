@@ -2,28 +2,38 @@
   <%= stylesheet_link_tag "recommendations", "data-turbo-track": "reload" %>
 <% end %>
 
+<% cover_initials = @recommendation.book_title.split.map(&:first).first(2).join.upcase %>
+<% cover_hue = %w[indigo violet blue teal rose amber][@recommendation.id % 6] %>
+<% match = if @recommendation.recommender.friend?
+    @recommendation.book_type == "fiction" ? @recommendation.recommender.fiction_match : @recommendation.recommender.nonfiction_match
+  end %>
+<% cover_src = @book_meta&.thumbnail_url.presence || book_cover_path(title: @recommendation.book_title, size: "L") %>
+
 <div class="rec-detail">
   <div class="rec-detail__back">
-    <%= link_to recommendations_path, class: "btn btn--ghost btn--sm" do %>
-      ← Back to queue
+    <%= link_to recommendations_path, class: "back-link" do %>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 11L5 7l4-4"/>
+      </svg>
+      Reading Queue
     <% end %>
   </div>
 
-  <div class="rec-detail__layout">
-    <div class="rec-detail__cover">
-      <div class="rec-detail__cover-wrap" data-cover-wrap>
-        <img src="https://covers.openlibrary.org/b/title/<%= CGI.escape(@recommendation.book_title) %>-L.jpg"
-             alt="Cover of <%= @recommendation.book_title %>"
-             class="rec-detail__cover-img"
-             onerror="this.closest('[data-cover-wrap]').style.display='none'" />
-      </div>
+  <div class="rec-detail__hero">
+    <div class="book-cover book-cover--lg book-cover--<%= cover_hue %>">
+      <span class="book-cover__initials" aria-hidden="true"><%= cover_initials %></span>
+      <img class="book-cover__img"
+           src="<%= cover_src %>"
+           alt="Cover of <%= @recommendation.book_title %>"
+           onload="if(this.naturalWidth>20&&this.naturalHeight>20)this.classList.add('loaded')"
+           onerror="this.remove()" />
     </div>
 
-    <div class="rec-detail__content">
-      <div class="rec-detail__meta">
+    <div class="rec-detail__info">
+      <div class="rec-detail__chips">
         <% if @recommendation.recommender.friend? %>
           <span class="source-chip source-chip--friend">
-            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="5.5" cy="3.5" r="2"/>
               <path d="M1.5 10c0-2.21 1.79-4 4-4s4 1.79 4 4"/>
             </svg>
@@ -31,68 +41,174 @@
           </span>
         <% else %>
           <span class="source-chip source-chip--ai">
-            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
               <path d="M5.5 1L6.55 4.2L9.5 5.5L6.55 6.8L5.5 10L4.45 6.8L1.5 5.5L4.45 4.2L5.5 1Z" fill="currentColor"/>
             </svg>
             AI Pick
           </span>
+        <% end %>
+        <span class="status-pill status-pill--<%= @recommendation.status %>"><%= @recommendation.status.humanize %></span>
+        <% if @recommendation.book_type.present? %>
+          <span class="genre-pill"><%= @recommendation.book_type.humanize %></span>
         <% end %>
         <% if @recommendation.outcome_rating.present? %>
           <span class="outcome-pill <%= @recommendation.outcome_rating %>"><%= @recommendation.outcome_rating.humanize %></span>
         <% end %>
       </div>
 
-      <h1 class="rec-detail__title"><%= @recommendation.book_title %></h1>
-      <p class="rec-detail__author"><%= @recommendation.book_author %></p>
+      <div>
+        <h1 class="rec-detail__title"><%= @recommendation.book_title %></h1>
+        <p class="rec-detail__author">by <%= @recommendation.book_author %></p>
+      </div>
 
-      <% if @recommendation.recommender.friend? %>
-        <% match = @recommendation.book_type == "fiction" ? @recommendation.recommender.fiction_match : @recommendation.recommender.nonfiction_match %>
-        <% if match %>
-          <div class="rec-detail__taste">
-            <span class="rec-detail__taste-label">Taste match</span>
+      <% if match %>
+        <div class="rec-detail__taste-row">
+          <span class="rec-detail__taste-label">Taste match</span>
+          <div class="rec-detail__taste-bar">
+            <div class="rec-detail__taste-fill rec-detail__taste-fill--<%= match_bar_class(match) %>"
+                 style="width: <%= (match * 100).round %>%"></div>
+          </div>
+          <span class="rec-detail__taste-pct source-match--<%= match_bar_class(match) %>"><%= (match * 100).round %>%</span>
+        </div>
+      <% end %>
+
+      <% unless @recommendation.read? || @recommendation.skipped? %>
+        <div class="rec-detail__actions">
+          <% if @recommendation.pending? %>
+            <%= button_to "Start reading", recommendation_path(@recommendation),
+                params: {recommendation: {status: :reading}},
+                method: :patch, class: "btn btn--primary" %>
+          <% elsif @recommendation.reading? %>
+            <%= button_to "Mark as read", recommendation_path(@recommendation),
+                params: {recommendation: {status: :read}},
+                method: :patch, class: "btn btn--primary" %>
+          <% end %>
+          <%= button_to "Skip", recommendation_path(@recommendation),
+              params: {recommendation: {status: :skipped}},
+              method: :patch, class: "btn btn--ghost btn--danger" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# ── About (Google Books metadata) ─────────────────────────────────── %>
+  <% if @book_meta %>
+    <div class="rec-detail__section">
+      <div class="rec-detail__section-header">
+        <h2 class="rec-detail__section-label">About</h2>
+        <div class="rec-detail__ext-meta">
+          <% if @book_meta.average_rating %>
+            <span class="rec-detail__rating">
+              <span class="rec-detail__rating-star">★</span>
+              <%= @book_meta.average_rating %>
+              <% if @book_meta.ratings_count %>
+                <span class="rec-detail__rating-count"><%= number_with_delimiter(@book_meta.ratings_count) %> ratings</span>
+              <% end %>
+            </span>
+          <% end %>
+          <% if @book_meta.page_count %>
+            <span class="rec-detail__page-count"><%= @book_meta.page_count %> pages</span>
+          <% end %>
+          <% if @book_meta.categories&.first %>
+            <span class="rec-detail__category"><%= @book_meta.categories.first %></span>
+          <% end %>
+        </div>
+      </div>
+      <% if @book_meta.description.present? %>
+        <p class="rec-detail__description"><%= @book_meta.description %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%# ── Why this book ───────────────────────────────────────────────── %>
+  <% if @recommendation.reason.present? %>
+    <div class="rec-detail__section">
+      <h2 class="rec-detail__section-label">Why this book</h2>
+      <blockquote class="rec-detail__reason-quote"><%= @recommendation.reason %></blockquote>
+    </div>
+  <% end %>
+
+  <%# ── Taste index (friend recommendations only) ───────────────────── %>
+  <% if @recommendation.recommender.friend? && (@recommendation.recommender.fiction_match || @recommendation.recommender.nonfiction_match) %>
+    <div class="rec-detail__section">
+      <h2 class="rec-detail__section-label">Taste index</h2>
+      <p class="rec-detail__taste-name">Your match with <%= @recommendation.recommender.name %></p>
+      <div class="rec-detail__taste-index">
+        <% if @recommendation.recommender.fiction_match %>
+          <% fm = @recommendation.recommender.fiction_match %>
+          <div class="rec-detail__taste-row<%= ' rec-detail__taste-row--active' if @recommendation.book_type == 'fiction' %>">
+            <span class="rec-detail__taste-label">Fiction</span>
             <div class="rec-detail__taste-bar">
-              <div class="rec-detail__taste-fill rec-detail__taste-fill--<%= match_bar_class(match) %>"
-                   style="width: <%= (match * 100).round %>%"></div>
+              <div class="rec-detail__taste-fill rec-detail__taste-fill--<%= match_bar_class(fm) %>"
+                   style="width: <%= (fm * 100).round %>%"></div>
             </div>
-            <span class="rec-detail__taste-pct source-match--<%= match_bar_class(match) %>"><%= (match * 100).round %>%</span>
+            <span class="rec-detail__taste-pct source-match--<%= match_bar_class(fm) %>"><%= (fm * 100).round %>%</span>
           </div>
         <% end %>
-      <% end %>
-
-      <% if @recommendation.reason.present? %>
-        <blockquote class="rec-detail__reason"><%= @recommendation.reason %></blockquote>
-      <% end %>
-
-      <div class="rec-detail__actions">
-        <% if @recommendation.pending? %>
-          <%= button_to "Start reading", recommendation_path(@recommendation),
-              params: {recommendation: {status: :reading}},
-              method: :patch, class: "btn btn--primary" %>
-          <%= button_to "Skip", recommendation_path(@recommendation),
-              params: {recommendation: {status: :skipped}},
-              method: :patch, class: "btn btn--ghost btn--danger" %>
-        <% elsif @recommendation.reading? %>
-          <%= button_to "Mark as read", recommendation_path(@recommendation),
-              params: {recommendation: {status: :read}},
-              method: :patch, class: "btn btn--primary" %>
-          <%= button_to "Skip", recommendation_path(@recommendation),
-              params: {recommendation: {status: :skipped}},
-              method: :patch, class: "btn btn--ghost btn--danger" %>
-        <% elsif @recommendation.read? && @recommendation.outcome_rating.blank? %>
-          <p class="rec-detail__outcome-prompt">How was it?</p>
-          <div class="rec-detail__outcome-btns">
-            <%= button_to "Loved", recommendation_path(@recommendation),
-                params: {recommendation: {outcome_rating: :loved}},
-                method: :patch, class: "btn outcome-btn outcome-btn--loved" %>
-            <%= button_to "Liked", recommendation_path(@recommendation),
-                params: {recommendation: {outcome_rating: :liked}},
-                method: :patch, class: "btn outcome-btn outcome-btn--liked" %>
-            <%= button_to "Meh", recommendation_path(@recommendation),
-                params: {recommendation: {outcome_rating: :meh}},
-                method: :patch, class: "btn outcome-btn outcome-btn--meh" %>
+        <% if @recommendation.recommender.nonfiction_match %>
+          <% nfm = @recommendation.recommender.nonfiction_match %>
+          <div class="rec-detail__taste-row<%= ' rec-detail__taste-row--active' if @recommendation.book_type == 'nonfiction' %>">
+            <span class="rec-detail__taste-label">Non-fiction</span>
+            <div class="rec-detail__taste-bar">
+              <div class="rec-detail__taste-fill rec-detail__taste-fill--<%= match_bar_class(nfm) %>"
+                   style="width: <%= (nfm * 100).round %>%"></div>
+            </div>
+            <span class="rec-detail__taste-pct source-match--<%= match_bar_class(nfm) %>"><%= (nfm * 100).round %>%</span>
           </div>
         <% end %>
       </div>
     </div>
+  <% end %>
+
+  <%# ── Outcome rating ───────────────────────────────────────────────── %>
+  <% if @recommendation.read? && @recommendation.outcome_rating.blank? %>
+    <div class="rec-detail__section">
+      <h2 class="rec-detail__section-label">How was it?</h2>
+      <div class="rec-detail__outcome-btns">
+        <%= button_to "Loved", recommendation_path(@recommendation),
+            params: {recommendation: {outcome_rating: :loved}},
+            method: :patch, class: "btn outcome-btn outcome-btn--loved" %>
+        <%= button_to "Liked", recommendation_path(@recommendation),
+            params: {recommendation: {outcome_rating: :liked}},
+            method: :patch, class: "btn outcome-btn outcome-btn--liked" %>
+        <%= button_to "Meh", recommendation_path(@recommendation),
+            params: {recommendation: {outcome_rating: :meh}},
+            method: :patch, class: "btn outcome-btn outcome-btn--meh" %>
+      </div>
+    </div>
+  <% end %>
+
+  <%# ── Book chat ──────────────────────────────────────────────────────── %>
+  <div class="rec-detail__section rec-detail__section--chat"
+       data-controller="book-chat"
+       data-book-chat-url-value="<%= llm_book_chat_path %>"
+       data-book-chat-title-value="<%= @recommendation.book_title %>"
+       data-book-chat-author-value="<%= @recommendation.book_author %>">
+    <h2 class="rec-detail__section-label">Ask about this book</h2>
+    <p class="rec-detail__chat-hint">Ask anything — themes, writing style, similar books. No spoilers!</p>
+    <div class="book-chat-log" data-book-chat-target="log" aria-live="polite"></div>
+    <div class="book-chat-input">
+      <input type="text"
+             class="ai-panel__input"
+             data-book-chat-target="input"
+             placeholder="What's the atmosphere like? Is it fast-paced?…"
+             data-action="keydown.enter->book-chat#send"
+             aria-label="Ask a question about this book" />
+      <button class="btn btn--sm btn--primary"
+              data-action="click->book-chat#send"
+              data-book-chat-target="sendBtn">
+        Ask
+      </button>
+    </div>
+  </div>
+
+  <div class="rec-detail__footer">
+    <% if @recommendation.book_type.present? %>
+      <span><%= @recommendation.book_type.humanize %></span>
+    <% end %>
+    <span>Added <%= @recommendation.created_at.strftime("%B %-d, %Y") %></span>
+    <% if @recommendation.read_at.present? %>
+      <span>Read <%= @recommendation.read_at.strftime("%B %-d, %Y") %></span>
+    <% end %>
   </div>
 </div>
