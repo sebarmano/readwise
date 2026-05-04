@@ -4,7 +4,7 @@
 <% cover_src = "https://covers.openlibrary.org/b/title/#{ERB::Util.url_encode(book.title)}-M.jpg" %>
 
 <article class="lib-card">
-  <div class="lib-card__cover-wrap">
+  <%= link_to book_path(book), class: "lib-card__cover-wrap", data: { turbo_frame: "_top" }, aria: { label: book.title } do %>
     <div class="book-cover book-cover--sm book-cover--<%= cover_hue %>">
       <span class="book-cover__initials" aria-hidden="true"><%= cover_initials %></span>
       <img class="book-cover__img"
@@ -13,15 +13,7 @@
            onload="if(this.naturalWidth>20&&this.naturalHeight>20)this.classList.add('loaded')"
            onerror="this.remove()" />
     </div>
-    <div class="lib-card__actions">
-      <%= link_to "View", book_path(book), class: "lib-card__action", data: { turbo_frame: "_top" } %>
-      <%= link_to "Edit", edit_book_path(book), class: "lib-card__action", data: { turbo_frame: "_top" } %>
-      <%= button_to "Delete", book_path(book),
-          method: :delete,
-          class: "lib-card__action lib-card__action--danger",
-          form: { data: { turbo_confirm: "Remove #{book.title} from your library?" } } %>
-    </div>
-  </div>
+  <% end %>
 
   <div class="lib-card__meta">
     <%= link_to book.title, book_path(book), class: "lib-card__title-link", data: { turbo_frame: "_top" } %>

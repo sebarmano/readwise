@@ -50,6 +50,34 @@
     </div>
   </div>
 
+  <% if @book_meta %>
+    <div class="book-show__section">
+      <div class="book-show__section-header">
+        <h2 class="book-show__section-label">About</h2>
+        <div class="book-show__ext-meta">
+          <% if @book_meta.average_rating %>
+            <span class="book-show__rating">
+              <span class="book-show__rating-star">★</span>
+              <%= @book_meta.average_rating %>
+              <% if @book_meta.ratings_count %>
+                <span class="book-show__rating-count"><%= number_with_delimiter(@book_meta.ratings_count) %> ratings</span>
+              <% end %>
+            </span>
+          <% end %>
+          <% if @book_meta.page_count %>
+            <span class="book-show__page-count"><%= @book_meta.page_count %> pages</span>
+          <% end %>
+          <% if @book_meta.categories&.first %>
+            <span class="book-show__category"><%= @book_meta.categories.first %></span>
+          <% end %>
+        </div>
+      </div>
+      <% if @book_meta.description.present? %>
+        <p class="book-show__description"><%= @book_meta.description %></p>
+      <% end %>
+    </div>
+  <% end %>
+
   <% if @book.notes.present? %>
     <div class="book-show__section">
       <h2 class="book-show__section-label">Notes</h2>

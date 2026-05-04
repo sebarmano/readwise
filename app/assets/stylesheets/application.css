@@ -275,6 +275,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .book-cover--sm { width: 60px; height: 90px; }
+.book-cover--md { width: 90px; height: 135px; }
 .book-cover--lg { width: 140px; height: 210px; }
 
 .book-cover__initials {

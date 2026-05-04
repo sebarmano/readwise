@@ -105,5 +105,13 @@
       </div>
     <% end %>
 
+    <% if recommendation.skipped? %>
+      <div class="rec-card__actions">
+        <%= button_to "Back to queue", recommendation_path(recommendation),
+            params: {recommendation: {status: :pending}},
+            method: :patch, class: "btn btn--sm btn--ghost" %>
+      </div>
+    <% end %>
+
   </div>
 </turbo-frame>

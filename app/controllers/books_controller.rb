@@ -13,6 +13,7 @@ class BooksController < ApplicationController
   end
 
   def show
+    @book_meta = BookMetadataService.new(@book.title, @book.author).call
   end
 
   def new

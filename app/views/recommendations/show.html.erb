@@ -88,6 +88,14 @@
               method: :patch, class: "btn btn--ghost btn--danger" %>
         </div>
       <% end %>
+
+      <% if @recommendation.skipped? %>
+        <div class="rec-detail__actions">
+          <%= button_to "Back to queue", recommendation_path(@recommendation),
+              params: {recommendation: {status: :pending}},
+              method: :patch, class: "btn btn--ghost" %>
+        </div>
+      <% end %>
     </div>
   </div>
 
