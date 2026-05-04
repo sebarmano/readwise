@@ -10,6 +10,7 @@ class BooksController < ApplicationController
 
     @genres = Current.user.books.distinct.pluck(:genre).compact.sort
     @total = Current.user.books.count
+    @reading_now = Current.user.recommendations.where(status: :reading).order(created_at: :asc)
   end
 
   def show

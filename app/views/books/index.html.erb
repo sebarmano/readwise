@@ -25,6 +25,41 @@
     </div>
   </div>
 
+  <% if @reading_now.any? %>
+    <div class="now-reading-section">
+      <p class="now-reading-section__label">
+        Reading now
+        <% if @reading_now.size > 1 %>
+          <span class="now-reading-section__count"><%= @reading_now.size %></span>
+        <% end %>
+      </p>
+      <div class="now-reading-row">
+        <% @reading_now.each do |rec| %>
+          <% cover_hue = %w[indigo violet blue teal rose amber][rec.id % 6] %>
+          <% cover_src = book_cover_path(title: rec.book_title, size: "L") %>
+          <% cover_initials = rec.book_title.split.map(&:first).first(2).join.upcase %>
+          <%= link_to recommendation_path(rec), class: "now-reading-card", data: { turbo_frame: "_top" } do %>
+            <div class="now-reading-card__cover">
+              <div class="book-cover book-cover--md book-cover--<%= cover_hue %>">
+                <span class="book-cover__initials" aria-hidden="true"><%= cover_initials %></span>
+                <img class="book-cover__img"
+                     src="<%= cover_src %>"
+                     alt="Cover of <%= rec.book_title %>"
+                     onload="if(this.naturalWidth>20&&this.naturalHeight>20)this.classList.add('loaded')"
+                     onerror="this.remove()" />
+              </div>
+            </div>
+            <div class="now-reading-card__body">
+              <p class="now-reading-card__title"><%= rec.book_title %></p>
+              <p class="now-reading-card__author">by <%= rec.book_author %></p>
+            </div>
+            <div class="now-reading-card__cta" aria-hidden="true">›</div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
   <div class="filter-bar">
     <div class="filter-group">
       <button type="button" class="<%= rating_chip_class(nil) %>"

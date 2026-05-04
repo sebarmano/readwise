@@ -35,8 +35,8 @@
             Insights
           <% end %>
           <%= link_to recommendations_path, class: "nav-item #{active_nav?(:recommendations) ? "active" : ""}" do %>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-            Reading Queue
+            <svg viewBox="0 0 14 14" fill="currentColor" stroke="none" width="15" height="15" style="flex-shrink:0"><path d="M7 1L8.2 5.4L12.5 7L8.2 8.6L7 13L5.8 8.6L1.5 7L5.8 5.4L7 1Z"/></svg>
+            Recommendations
             <%= render "layouts/queue_badge" %>
           <% end %>
           <%= link_to recommenders_path, class: "nav-item #{active_nav?(:recommenders) ? "active" : ""}" do %>
