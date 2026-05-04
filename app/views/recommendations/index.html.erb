@@ -13,34 +13,72 @@
   </div>
 </div>
 
-<div class="ai-panel"
+<div class="rec-prompt"
      data-controller="chat"
      data-chat-question-url-value="<%= llm_question_path %>"
      data-chat-recommend-url-value="<%= llm_recommend_path %>"
      data-chat-state="idle">
-  <div class="ai-panel__header">
-    <span class="ai-panel__icon" aria-hidden="true">
-      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M6.5 1.5L7.55 5.2L11 6.5L7.55 7.8L6.5 11.5L5.45 7.8L2 6.5L5.45 5.2L6.5 1.5Z" fill="currentColor"/>
-      </svg>
-    </span>
-    <span class="ai-panel__label">Ask for a recommendation</span>
+
+  <%# ── Idle state: personal invitation ─────────────────────────────────── %>
+  <div class="rec-prompt__idle" data-chat-target="inputRow">
+    <div class="rec-prompt__heading">
+      <span class="rec-prompt__spark" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M7 1L8.2 5.4L12.5 7L8.2 8.6L7 13L5.8 8.6L1.5 7L5.8 5.4L7 1Z" fill="currentColor"/>
+        </svg>
+      </span>
+      <div>
+        <p class="rec-prompt__title">
+          <% if @last_loved %>
+            Something for after <em><%= @last_loved.title %></em>?
+          <% else %>
+            What should you read next?
+          <% end %>
+        </p>
+        <p class="rec-prompt__sub">I know your taste — just tap a mood or describe what you're after</p>
+      </div>
+    </div>
+
+    <div class="rec-prompt__chips">
+      <% @top_genres.each do |genre| %>
+        <button class="rec-prompt__chip"
+                data-action="click->chat#suggest"
+                data-chat-value-param="<%= genre.downcase %>">
+          <%= genre %>
+        </button>
+      <% end %>
+      <button class="rec-prompt__chip"
+              data-action="click->chat#suggest"
+              data-chat-value-param="something dark and gripping">
+        Dark &amp; gripping
+      </button>
+      <button class="rec-prompt__chip"
+              data-action="click->chat#suggest"
+              data-chat-value-param="light and fun, easy to read">
+        Light read
+      </button>
+      <button class="rec-prompt__chip rec-prompt__chip--surprise"
+              data-action="click->chat#suggest"
+              data-chat-value-param="">
+        Surprise me
+      </button>
+    </div>
+
+    <div class="rec-prompt__input-row">
+      <input type="text"
+             data-chat-target="input"
+             class="rec-prompt__input"
+             placeholder="Or describe what you're in the mood for…"
+             data-action="keydown.enter->chat#ask"
+             aria-label="Describe what you want to read" />
+      <button data-action="click->chat#ask" class="btn btn--primary btn--sm">
+        Ask
+      </button>
+    </div>
   </div>
 
+  <%# ── In-flight: chat bubbles ──────────────────────────────────────────── %>
   <div class="ai-chat" data-chat-target="chat" aria-live="polite"></div>
-
-  <div class="ai-panel__input-row" data-chat-target="inputRow">
-    <input type="text"
-           data-chat-target="input"
-           class="ai-panel__input"
-           placeholder="Any mood or genre in mind? (optional)"
-           data-action="keydown.enter->chat#ask"
-           aria-label="Optional preferences before getting a recommendation" />
-    <button data-action="click->chat#ask"
-            class="btn btn--sm btn--primary">
-      Ask
-    </button>
-  </div>
 
   <div class="ai-panel__answer-row" data-chat-target="answerRow">
     <input type="text"
@@ -49,10 +87,7 @@
            placeholder="Type your answer…"
            data-action="keydown.enter->chat#send"
            aria-label="Answer" />
-    <button data-action="click->chat#send"
-            class="btn btn--sm btn--primary">
-      Send
-    </button>
+    <button data-action="click->chat#send" class="btn btn--sm btn--primary">Send</button>
   </div>
 
   <div class="ai-panel__feedback-row" data-chat-target="feedbackRow">
@@ -64,19 +99,13 @@
              placeholder="e.g. more modern, less dark, shorter…"
              data-action="keydown.enter->chat#refine"
              aria-label="Feedback on recommendations" />
-      <button data-action="click->chat#refine"
-              class="btn btn--sm btn--ghost">
-        Refine
-      </button>
-      <button data-action="click->chat#finish"
-              class="btn btn--sm btn--primary">
-        Done
-      </button>
+      <button data-action="click->chat#refine" class="btn btn--sm btn--ghost">Refine</button>
+      <button data-action="click->chat#finish" class="btn btn--sm btn--primary">Done</button>
     </div>
   </div>
 
   <div class="ai-panel__restart">
-    <button data-action="click->chat#reset">Ask again</button>
+    <button data-action="click->chat#reset">Start over</button>
   </div>
 </div>
 

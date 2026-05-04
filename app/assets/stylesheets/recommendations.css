@@ -408,10 +408,10 @@ details[open] .rec-section__summary { color: var(--text-3); }
   scroll-behavior: smooth;
 }
 
-.ai-panel[data-chat-state="questioning"] .ai-chat,
-.ai-panel[data-chat-state="answering"]   .ai-chat,
-.ai-panel[data-chat-state="recommending"] .ai-chat,
-.ai-panel[data-chat-state="done"]         .ai-chat { display: flex; }
+.rec-prompt[data-chat-state="questioning"] .ai-chat,
+.rec-prompt[data-chat-state="answering"]   .ai-chat,
+.rec-prompt[data-chat-state="recommending"] .ai-chat,
+.rec-prompt[data-chat-state="done"]         .ai-chat { display: flex; }
 
 .chat-bubble {
   max-width: 88%;
@@ -444,30 +444,30 @@ details[open] .rec-section__summary { color: var(--text-3); }
   color: #6366F1;
 }
 
-/* ── Show/hide input rows by state ───────────────────────────────────────── */
+/* ── Show/hide rows by state ──────────────────────────────────────────────── */
 .ai-panel__answer-row { display: none; }
 
-.ai-panel[data-chat-state="questioning"] .ai-panel__input-row,
-.ai-panel[data-chat-state="answering"]   .ai-panel__input-row,
-.ai-panel[data-chat-state="recommending"] .ai-panel__input-row,
-.ai-panel[data-chat-state="done"]         .ai-panel__input-row { display: none; }
+.rec-prompt[data-chat-state="questioning"] .rec-prompt__idle,
+.rec-prompt[data-chat-state="answering"]   .rec-prompt__idle,
+.rec-prompt[data-chat-state="recommending"] .rec-prompt__idle,
+.rec-prompt[data-chat-state="reviewing"]   .rec-prompt__idle,
+.rec-prompt[data-chat-state="done"]         .rec-prompt__idle { display: none; }
 
-.ai-panel[data-chat-state="answering"] .ai-panel__answer-row { display: flex; }
+.rec-prompt[data-chat-state="answering"] .ai-panel__answer-row { display: flex; }
 
 .ai-panel__feedback-row { display: none; }
 
-.ai-panel[data-chat-state="reviewing"] .ai-panel__feedback-row { display: flex; flex-direction: column; gap: var(--s2); }
+.rec-prompt[data-chat-state="reviewing"] .ai-panel__feedback-row { display: flex; flex-direction: column; gap: var(--s2); }
 
 .ai-panel__feedback-inputs {
   display: flex;
   gap: var(--s2);
   align-items: center;
 }
-.ai-panel[data-chat-state="reviewing"] .ai-panel__input-row,
-.ai-panel[data-chat-state="reviewing"] .ai-panel__answer-row { display: none; }
+.rec-prompt[data-chat-state="reviewing"] .ai-panel__answer-row { display: none; }
 
 .ai-panel__restart { display: none; }
-.ai-panel[data-chat-state="done"] .ai-panel__restart { display: block; margin-top: var(--s2); }
+.rec-prompt[data-chat-state="done"] .ai-panel__restart { display: block; margin-top: var(--s2); }
 
 .ai-panel__restart button {
   background: none;
@@ -484,42 +484,126 @@ details[open] .rec-section__summary { color: var(--text-3); }
 
 .ai-panel__restart button:hover { color: var(--text-3); }
 
-/* ── AI panel ────────────────────────────────────────────────────────────── */
-.ai-panel {
+/* ── Personalized recommendation prompt ──────────────────────────────────── */
+.rec-prompt {
   margin: 0 var(--s8) var(--s5);
   max-width: 680px;
-  background: var(--bg-subtle);
+  background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
-  padding: var(--s4) var(--s5);
+  padding: var(--s5) var(--s6);
   box-shadow: var(--shadow-sm);
 }
 
-.ai-panel__header {
+.rec-prompt__idle {
   display: flex;
-  align-items: center;
-  gap: var(--s2);
-  margin-bottom: var(--s3);
+  flex-direction: column;
+  gap: var(--s4);
 }
 
-.ai-panel__icon {
+.rec-prompt__heading {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s3);
+}
+
+.rec-prompt__spark {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: var(--r-sm);
-  background: rgba(99,102,241,.12);
+  background: rgba(99,102,241,.1);
   color: #6366F1;
   flex-shrink: 0;
+  margin-top: 1px;
 }
 
-.ai-panel__label {
-  font-size: var(--text-sm);
-  font-weight: 600;
+.rec-prompt__title {
+  font-size: var(--text-md);
+  font-weight: 700;
+  color: var(--text-1);
+  line-height: 1.35;
+  letter-spacing: -.015em;
+}
+
+.rec-prompt__title em {
+  font-style: italic;
   color: var(--text-2);
 }
 
+.rec-prompt__sub {
+  font-size: var(--text-xs);
+  color: var(--text-4);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+.rec-prompt__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+.rec-prompt__chip {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 var(--s3);
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border);
+  background: var(--bg-subtle);
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: background var(--ease), border-color var(--ease), color var(--ease);
+  white-space: nowrap;
+}
+
+.rec-prompt__chip:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+  color: var(--text-1);
+}
+
+.rec-prompt__chip--surprise {
+  border-style: dashed;
+  color: var(--text-3);
+}
+
+.rec-prompt__chip--surprise:hover {
+  background: rgba(99,102,241,.06);
+  border-color: rgba(99,102,241,.35);
+  color: #6366F1;
+}
+
+.rec-prompt__input-row {
+  display: flex;
+  gap: var(--s2);
+  align-items: center;
+}
+
+.rec-prompt__input {
+  flex: 1;
+  height: 36px;
+  padding: 0 var(--s3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-canvas);
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  color: var(--text-1);
+  outline: none;
+  transition: border-color var(--ease), box-shadow var(--ease);
+}
+
+.rec-prompt__input::placeholder { color: var(--text-4); }
+.rec-prompt__input:focus { border-color: var(--border-strong); box-shadow: 0 0 0 3px var(--focus-ring); }
+
+/* ── AI panel__input (shared .ai-panel__input style for in-flight rows) ─── */
 .ai-panel__input-row {
   display: flex;
   gap: var(--s2);
@@ -596,7 +680,7 @@ details[open] .rec-section__summary { color: var(--text-3); }
   margin-bottom: var(--s2);
 }
 
-.ai-panel[data-chat-state="reviewing"] .ai-panel__feedback-hint { display: block; }
+.rec-prompt[data-chat-state="reviewing"] .ai-panel__feedback-hint { display: block; }
 
 /* ── AI thinking dots ────────────────────────────────────────────────────── */
 @keyframes thinking-dot {

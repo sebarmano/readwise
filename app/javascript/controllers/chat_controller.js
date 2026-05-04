@@ -28,6 +28,12 @@ export default class extends Controller {
     this.#streamTurn()
   }
 
+  suggest({ params: { value } }) {
+    if (this.#state !== "idle") return
+    this.inputTarget.value = value
+    this.ask()
+  }
+
   send() {
     if (this.#state !== "answering") return
     const answer = this.answerInputTarget.value.trim()

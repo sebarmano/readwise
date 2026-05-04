@@ -1,6 +1,8 @@
 class RecommendationsController < ApplicationController
   def index
     @recommendations = Current.user.recommendations.includes(:recommender).by_queue_order
+    @top_genres = Current.user.books.where.not(genre: nil).group(:genre).order("count_all desc").limit(3).count.keys
+    @last_loved = Current.user.books.where(rating: :loved).order(read_at: :desc).first
   end
 
   def new
