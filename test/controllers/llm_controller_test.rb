@@ -1,6 +1,8 @@
 require "test_helper"
 
 class LlmControllerTest < ActionDispatch::IntegrationTest
+  include ActiveJob::TestHelper
+
   def with_fake_service(chunks: ["token"], raise_error: nil)
     error = raise_error
     fake = Object.new
@@ -51,6 +53,15 @@ class LlmControllerTest < ActionDispatch::IntegrationTest
     assert_equal "something dark", received
   ensure
     RecommendationService.singleton_class.remove_method(:new)
+  end
+
+  test "enqueues ExtractPreferencesJob after recommendation session" do
+    sign_in_as users(:one)
+    with_fake_service do
+      assert_enqueued_with(job: ExtractPreferencesJob) do
+        get llm_recommend_path
+      end
+    end
   end
 
   test "streams ERROR event when ollama unreachable" do

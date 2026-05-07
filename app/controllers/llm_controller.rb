@@ -14,12 +14,14 @@ class LlmController < ApplicationController
   end
 
   def recommend
+    messages = parsed_messages
     sse_stream do
       RecommendationService.new(
         Current.user,
         clarification: params[:clarification].presence,
-        messages: parsed_messages
+        messages: messages
       ).call
+      ExtractPreferencesJob.perform_later(Current.user.id, messages, "recommendation_chat")
     end
   end
 
