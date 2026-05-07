@@ -25,5 +25,6 @@ class Recommendation < ApplicationRecord
   def complete!(outcome_rating:)
     update!(status: :read, outcome_rating:, read_at: Date.current)
     TasteMatchCalculator.new(recommender).call if recommender.friend?
+    user.friends.each { |friend| FriendTasteMatchService.call(user: user, friend: friend) }
   end
 end

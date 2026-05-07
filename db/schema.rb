@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_07_094858) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_07_095309) do
   create_table "books", force: :cascade do |t|
     t.string "author"
     t.string "cover_url"
@@ -31,6 +31,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_07_094858) do
   create_table "friendships", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "friend_id", null: false
+    t.float "match_score"
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
