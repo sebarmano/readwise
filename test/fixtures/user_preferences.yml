@@ -1,0 +1,35 @@
+slow_burn:
+  user: one
+  signal: prefers slow-burn pacing
+  source: recommendation_chat
+  created_at: 2026-05-01 10:00:00
+
+avoids_violence:
+  user: one
+  signal: avoids heavy violence
+  source: recommendation_chat
+  created_at: 2026-05-03 09:00:00
+
+unreliable_narrators:
+  user: one
+  signal: interested in unreliable narrators
+  source: recommendation_chat
+  created_at: 2026-05-05 12:00:00
+
+gothic_themes:
+  user: one
+  signal: drawn to gothic themes and dark atmosphere
+  source: book_chat
+  created_at: 2026-05-02 15:00:00
+
+historical_fiction:
+  user: one
+  signal: enjoys well-researched historical fiction
+  source: book_chat
+  created_at: 2026-05-04 11:00:00
+
+user_two_pref:
+  user: two
+  signal: prefers short novels under 300 pages
+  source: recommendation_chat
+  created_at: 2026-05-04 08:00:00
