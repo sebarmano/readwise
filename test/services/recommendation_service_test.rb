@@ -42,6 +42,20 @@ class RecommendationServiceTest < ActiveSupport::TestCase
     assert_not_includes service.prompt, books(:other_users_book).title
   end
 
+  # --- preference signals ---
+
+  test "prompt includes Known preferences section when user has preferences" do
+    service = RecommendationService.new(users(:one))
+    assert_includes service.prompt, "Known preferences"
+    assert_includes service.prompt, user_preferences(:slow_burn).signal
+  end
+
+  test "prompt omits Known preferences section when user has no preferences" do
+    user = User.create!(email_address: "no_prefs@example.com", password: "password")
+    service = RecommendationService.new(user)
+    assert_not_includes service.prompt, "Known preferences"
+  end
+
   # --- call ---
 
   test "call persists parsed recommendations" do

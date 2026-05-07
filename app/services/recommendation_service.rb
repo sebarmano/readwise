@@ -10,6 +10,7 @@ class RecommendationService
 
   def prompt
     parts = [reading_history_section]
+    parts << preferences_section if preference_signals.any?
     parts << claude_recs_section if claude_recs.any?
     parts << friend_recs_section if pending_friend_recs.any?
     parts << "## User preference\n#{@clarification}" if @clarification
@@ -28,6 +29,14 @@ class RecommendationService
   end
 
   private
+
+  def preference_signals
+    @preference_signals ||= @user.preferences.for_context.pluck(:signal)
+  end
+
+  def preferences_section
+    "## Known preferences\n#{preference_signals.join(" · ")}"
+  end
 
   def reading_history_section
     books = @user.books.order(read_at: :desc).limit(50)
