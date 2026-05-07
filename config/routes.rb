@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   resources :recommendations, only: %i[index new create show update destroy]
   resources :preferences, only: %i[index destroy]
   resources :friendships, only: %i[index create update destroy]
+  resources :friend_libraries, only: :show, param: :user_id
 
   get "book_cover" => "book_covers#show", :as => :book_cover
 

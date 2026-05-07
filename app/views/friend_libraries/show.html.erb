@@ -1,0 +1,56 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title"><%= @friend.email_address.split("@").first.capitalize %>'s Library</h1>
+  </div>
+  <%= link_to "← Friends", friendships_path, class: "back-link" %>
+</div>
+
+<% case @visibility %>
+<% when "full" %>
+  <% if @books.any? %>
+    <% if @now_reading.any? %>
+      <section class="friends-section">
+        <h2 class="friends-section__title">Currently Reading</h2>
+        <ul class="book-list">
+          <% @now_reading.each do |book| %>
+            <li><strong><%= book.title %></strong> by <%= book.author %></li>
+          <% end %>
+        </ul>
+      </section>
+    <% end %>
+    <section class="friends-section">
+      <h2 class="friends-section__title">All Books</h2>
+      <ul class="book-list">
+        <% @books.each do |book| %>
+          <li><strong><%= book.title %></strong> by <%= book.author %> — <%= book.rating %></li>
+        <% end %>
+      </ul>
+    </section>
+  <% else %>
+    <p class="friends-empty">No books in library yet.</p>
+  <% end %>
+
+<% when "current_book" %>
+  <% if @now_reading&.any? %>
+    <section class="friends-section">
+      <h2 class="friends-section__title">Currently Reading</h2>
+      <ul class="book-list">
+        <% @now_reading.each do |book| %>
+          <li><strong><%= book.title %></strong> by <%= book.author %></li>
+        <% end %>
+      </ul>
+    </section>
+  <% else %>
+    <p class="friends-empty">Not currently reading anything.</p>
+  <% end %>
+
+<% when "activity_only" %>
+  <p class="friends-activity">
+    <%= @friend.email_address.split("@").first.capitalize %> is reading something right now — they keep the details private.
+  </p>
+
+<% when "hidden" %>
+  <p class="friends-empty">
+    This friend is not sharing their library right now.
+  </p>
+<% end %>
