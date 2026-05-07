@@ -1,0 +1,9 @@
+pending_invite:
+  user: three
+  notifiable: one_three_pending (Friendship)
+  read_at:
+
+read_invite:
+  user: two
+  notifiable: one_two (Friendship)
+  read_at: 2026-05-01 10:00:00

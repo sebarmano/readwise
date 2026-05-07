@@ -1,0 +1,6 @@
+<%= turbo_frame_tag "notification-badge" do %>
+  <% count = Current.user&.notifications&.unread&.count.to_i %>
+  <% if count > 0 %>
+    <span class="nav-badge nav-badge--alert"><%= count %></span>
+  <% end %>
+<% end %>

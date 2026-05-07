@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_many :preferences, class_name: "UserPreference", dependent: :destroy
   has_many :sent_friendships, class_name: "Friendship", foreign_key: :user_id, dependent: :destroy
   has_many :received_friendships, class_name: "Friendship", foreign_key: :friend_id, dependent: :destroy
+  has_many :notifications, dependent: :destroy
 
   enum :library_visibility, {full: 0, current_book: 1, activity_only: 2, hidden: 3}
 

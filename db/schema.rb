@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_07_094326) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_07_094858) do
   create_table "books", force: :cascade do |t|
     t.string "author"
     t.string "cover_url"
@@ -37,6 +37,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_07_094326) do
     t.index ["friend_id"], name: "index_friendships_on_friend_id"
     t.index ["user_id", "friend_id"], name: "index_friendships_on_user_id_and_friend_id", unique: true
     t.index ["user_id"], name: "index_friendships_on_user_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "notifiable_id", null: false
+    t.string "notifiable_type", null: false
+    t.datetime "read_at"
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
   create_table "recommendations", force: :cascade do |t|
@@ -219,6 +230,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_07_094326) do
   add_foreign_key "books", "users"
   add_foreign_key "friendships", "users"
   add_foreign_key "friendships", "users", column: "friend_id"
+  add_foreign_key "notifications", "users"
   add_foreign_key "recommendations", "recommenders"
   add_foreign_key "recommendations", "users"
   add_foreign_key "recommenders", "users"

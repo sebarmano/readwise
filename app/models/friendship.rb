@@ -1,6 +1,7 @@
 class Friendship < ApplicationRecord
   belongs_to :user
   belongs_to :friend, class_name: "User"
+  has_many :notifications, as: :notifiable, dependent: :destroy
 
   enum :status, {pending: 0, accepted: 1}
 

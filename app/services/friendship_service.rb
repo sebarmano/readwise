@@ -5,16 +5,20 @@ class FriendshipService
     return nil if friend == from
     return nil if existing_friendship?(from, friend)
 
-    Friendship.create!(user: from, friend: friend, status: :pending)
+    friendship = Friendship.create!(user: from, friend: friend, status: :pending)
+    friend.notifications.create!(notifiable: friendship)
+    friendship
   end
 
   def self.accept(friendship:, user:)
     return unless friendship.friend == user
     friendship.update!(status: :accepted)
+    friendship.notifications.unread.each(&:read!)
   end
 
   def self.remove(friendship:, user:)
     return unless friendship.user == user || friendship.friend == user
+    friendship.notifications.unread.each(&:read!)
     friendship.destroy!
   end
 
