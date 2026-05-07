@@ -15,4 +15,15 @@ module ApplicationHelper
       (score >= 0.5) ? "amber" : "red"
     end
   end
+
+  def taste_match_label(score)
+    return "Not enough shared reads yet" if score.nil?
+    if score >= 0.75
+      "Great match"
+    elsif score >= 0.5
+      "Good match"
+    else
+      "Different tastes"
+    end
+  end
 end

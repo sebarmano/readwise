@@ -3,6 +3,7 @@
     <span class="friend-card__email">
       <%= friendship.user == Current.user ? friendship.friend.email_address : friendship.user.email_address %>
     </span>
+    <span class="friend-card__score"><%= taste_match_label(friendship.match_score) %></span>
   </div>
   <div class="friend-card__actions">
     <%= button_to "Remove", friendship_path(friendship), method: :delete,
