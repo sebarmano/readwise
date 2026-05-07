@@ -1,0 +1,65 @@
+.pref-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 640px;
+}
+
+.pref-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+}
+
+.pref-card__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.pref-card__signal {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  color: var(--text, #111);
+}
+
+.pref-card__meta {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.78rem;
+  color: var(--text-muted, #6b7280);
+}
+
+.pref-card__source {
+  background: var(--chip-bg, #f3f4f6);
+  border-radius: 999px;
+  padding: 0.1rem 0.55rem;
+}
+
+.pref-card__delete {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--text-muted, #9ca3af);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.15rem 0.4rem;
+  border-radius: 6px;
+  line-height: 1;
+}
+
+.pref-card__delete:hover {
+  background: var(--danger-light, #fee2e2);
+  color: var(--danger, #dc2626);
+}
+
+.pref-empty {
+  max-width: 640px;
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--text-muted, #6b7280);
+  font-size: 0.9rem;
+}

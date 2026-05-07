@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get "insights", to: "insights#index", as: :insights
   resources :recommenders
   resources :recommendations, only: %i[index new create show update destroy]
+  resources :preferences, only: %i[index destroy]
 
   get "book_cover" => "book_covers#show", :as => :book_cover
 

@@ -1,0 +1,37 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "preferences", "data-turbo-track": "reload" %>
+<% end %>
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Taste Profile</h1>
+    <p class="page-sub">Signals the AI has learned from your conversations</p>
+  </div>
+  <%= link_to "← Insights", insights_path, class: "back-link" %>
+</div>
+
+<% if @preferences.any? %>
+  <div class="pref-list">
+    <% @preferences.each do |pref| %>
+      <div class="pref-card" id="preference_<%= pref.id %>">
+        <div class="pref-card__body">
+          <p class="pref-card__signal"><%= pref.signal %></p>
+          <div class="pref-card__meta">
+            <span class="pref-card__source"><%= pref.source.humanize %></span>
+            <span class="pref-card__date"><%= time_ago_in_words(pref.created_at) %> ago</span>
+          </div>
+        </div>
+        <%= button_to preference_path(pref), method: :delete,
+              class: "pref-card__delete",
+              data: { turbo_confirm: "Remove this preference signal?" },
+              form: { data: { turbo_stream: true } } do %>
+          &times;
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="pref-empty">
+    <p>No taste signals yet — start a recommendation conversation to build your profile.</p>
+  </div>
+<% end %>
