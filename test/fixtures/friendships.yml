@@ -1,0 +1,9 @@
+one_two:
+  user: one
+  friend: two
+  status: accepted
+
+one_three_pending:
+  user: one
+  friend: three
+  status: pending

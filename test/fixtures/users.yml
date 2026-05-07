@@ -7,3 +7,8 @@ one:
 two:
   email_address: two@example.com
   password_digest: <%= password_digest %>
+
+three:
+  email_address: three@example.com
+  password_digest: <%= password_digest %>
+  library_visibility: full

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_07_092432) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_07_094326) do
   create_table "books", force: :cascade do |t|
     t.string "author"
     t.string "cover_url"
@@ -26,6 +26,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_07_092432) do
     t.integer "user_id", null: false
     t.integer "year"
     t.index ["user_id"], name: "index_books_on_user_id"
+  end
+
+  create_table "friendships", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "friend_id", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["friend_id"], name: "index_friendships_on_friend_id"
+    t.index ["user_id", "friend_id"], name: "index_friendships_on_user_id_and_friend_id", unique: true
+    t.index ["user_id"], name: "index_friendships_on_user_id"
   end
 
   create_table "recommendations", force: :cascade do |t|
@@ -199,12 +210,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_07_092432) do
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email_address", null: false
+    t.integer "library_visibility", default: 0, null: false
     t.string "password_digest", null: false
     t.datetime "updated_at", null: false
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
   add_foreign_key "books", "users"
+  add_foreign_key "friendships", "users"
+  add_foreign_key "friendships", "users", column: "friend_id"
   add_foreign_key "recommendations", "recommenders"
   add_foreign_key "recommendations", "users"
   add_foreign_key "recommenders", "users"
