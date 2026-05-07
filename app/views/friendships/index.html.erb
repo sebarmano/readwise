@@ -1,0 +1,61 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "friendships", "data-turbo-track": "reload" %>
+<% end %>
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Friends</h1>
+    <p class="page-sub"><%= pluralize(@friends.count, "friend") %></p>
+  </div>
+</div>
+
+<%# ── Invite form ──────────────────────────────────────────────── %>
+<section class="friends-invite">
+  <%= form_with url: friendships_path, method: :post, class: "invite-form" do |f| %>
+    <%= f.email_field :email, name: "friendship[email]",
+          placeholder: "Invite by email address",
+          class: "invite-form__input",
+          autocomplete: "email" %>
+    <%= f.submit "Send invite", class: "invite-form__btn" %>
+  <% end %>
+</section>
+
+<%# ── Pending received ─────────────────────────────────────────── %>
+<% if @pending_received.any? %>
+  <section class="friends-section">
+    <h2 class="friends-section__title">Pending invites</h2>
+    <div class="friends-list">
+      <% @pending_received.each do |friendship| %>
+        <div class="friend-card" id="friendship_<%= friendship.id %>">
+          <span class="friend-card__email"><%= friendship.user.email_address %></span>
+          <div class="friend-card__actions">
+            <%= button_to "Accept", friendship_path(friendship), method: :patch,
+                  class: "btn btn--sm btn--primary",
+                  form: {data: {turbo_stream: true}} %>
+            <%= button_to "Decline", friendship_path(friendship), method: :delete,
+                  class: "btn btn--sm btn--ghost",
+                  form: {data: {turbo_stream: true}} %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% end %>
+
+<%# ── Accepted friends ─────────────────────────────────────────── %>
+<% if @friends.any? %>
+  <section class="friends-section">
+    <h2 class="friends-section__title">Friends</h2>
+    <div class="friends-list">
+      <% @friends.each do |friend| %>
+        <% friendship = Current.user.sent_friendships.accepted.find_by(friend: friend) ||
+                        Current.user.received_friendships.accepted.find_by(user: friend) %>
+        <%= render "friend", friendship: friendship %>
+      <% end %>
+    </div>
+  </section>
+<% else %>
+  <div class="friends-empty">
+    <p>No friends yet — invite someone by email above.</p>
+  </div>
+<% end %>

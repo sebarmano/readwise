@@ -1,0 +1,13 @@
+<div class="friend-card" id="friendship_<%= friendship.id %>">
+  <div class="friend-card__info">
+    <span class="friend-card__email">
+      <%= friendship.user == Current.user ? friendship.friend.email_address : friendship.user.email_address %>
+    </span>
+  </div>
+  <div class="friend-card__actions">
+    <%= button_to "Remove", friendship_path(friendship), method: :delete,
+          class: "btn btn--sm btn--ghost btn--danger",
+          data: {turbo_confirm: "Remove this friend?"},
+          form: {data: {turbo_stream: true}} %>
+  </div>
+</div>

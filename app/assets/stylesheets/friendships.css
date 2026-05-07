@@ -1,0 +1,88 @@
+.friends-invite {
+  max-width: 480px;
+  margin-bottom: 2rem;
+}
+
+.invite-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.invite-form__input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.invite-form__btn {
+  padding: 0.5rem 1rem;
+  background: var(--accent, #4f46e5);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.friends-section {
+  margin-bottom: 2rem;
+  max-width: 560px;
+}
+
+.friends-section__title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted, #6b7280);
+  margin: 0 0 0.75rem;
+}
+
+.friends-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.friend-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 10px;
+  padding: 0.85rem 1.1rem;
+}
+
+.friend-card__email {
+  font-size: 0.9rem;
+  color: var(--text, #111);
+}
+
+.friend-card__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn {
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.3rem 0.7rem;
+}
+
+.btn--sm { font-size: 0.8rem; }
+.btn--primary { background: var(--accent, #4f46e5); color: #fff; }
+.btn--ghost { background: var(--chip-bg, #f3f4f6); color: var(--text, #111); }
+.btn--danger:hover { background: var(--danger-light, #fee2e2); color: var(--danger, #dc2626); }
+
+.friends-empty {
+  color: var(--text-muted, #6b7280);
+  font-size: 0.9rem;
+  padding: 2rem 0;
+}
