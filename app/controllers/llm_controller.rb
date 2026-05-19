@@ -53,7 +53,7 @@ class LlmController < ApplicationController
     response.headers["X-Accel-Buffering"] = "no"
     yield
     response.stream.write("data: [DONE]\n\n")
-  rescue OllamaClient::ConnectionError => e
+  rescue LlmClient::ConnectionError => e
     response.stream.write("data: [ERROR] #{e.message}\n\n")
   rescue => e
     response.stream.write("data: [ERROR] #{e.message}\n\n")

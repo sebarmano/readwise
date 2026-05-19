@@ -47,7 +47,7 @@ class QuestionService
   # Turn 10+: force finish
   FORCE_READY = "[READY]"
 
-  def initialize(user, clarification: nil, messages: [], ollama_client: OllamaClient.new)
+  def initialize(user, clarification: nil, messages: [], ollama_client: LlmClient.default)
     @user = user
     @clarification = clarification
     @messages = messages
