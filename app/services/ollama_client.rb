@@ -2,7 +2,7 @@ require "net/http"
 require "json"
 
 class OllamaClient
-  ConnectionError = Class.new(StandardError)
+  ConnectionError = Class.new(LlmClient::ConnectionError)
 
   CONNECTION_ERRORS = [
     Errno::ECONNREFUSED,

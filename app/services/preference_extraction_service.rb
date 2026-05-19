@@ -7,7 +7,7 @@ class PreferenceExtractionService
     Output only the signals, one per line. No numbering, no bullet points, no extra text.
   PROMPT
 
-  def initialize(user, messages:, source:, client: OllamaClient.new)
+  def initialize(user, messages:, source:, client: LlmClient.default)
     @user = user
     @messages = messages
     @source = source

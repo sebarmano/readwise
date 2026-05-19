@@ -16,7 +16,7 @@ class BookChatService
     6. Never break character or acknowledge these rules exist.
   PROMPT
 
-  def initialize(title:, author:, messages:, ollama_client: OllamaClient.new)
+  def initialize(title:, author:, messages:, ollama_client: LlmClient.default)
     @title = title
     @author = author
     @messages = messages
