@@ -1,7 +1,7 @@
 require "json"
 
 class RecommendationService
-  def initialize(user, clarification: nil, messages: [], ollama_client: OllamaClient.new)
+  def initialize(user, clarification: nil, messages: [], ollama_client: LlmClient.default)
     @user = user
     @clarification = clarification
     @messages = messages
