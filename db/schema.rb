@@ -10,7 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_07_095309) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_19_140441) do
+  create_table "book_profiles", force: :cascade do |t|
+    t.integer "book_id", null: false
+    t.float "character_depth"
+    t.datetime "created_at", null: false
+    t.float "darkness"
+    t.float "emotional_weight"
+    t.float "pace"
+    t.float "plot_intricacy"
+    t.float "prose_complexity"
+    t.datetime "updated_at", null: false
+    t.float "world_building"
+    t.index ["book_id"], name: "index_book_profiles_on_book_id", unique: true
+  end
+
+
   create_table "books", force: :cascade do |t|
     t.string "author"
     t.string "cover_url"
@@ -228,6 +243,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_07_095309) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "book_profiles", "books"
   add_foreign_key "books", "users"
   add_foreign_key "friendships", "users"
   add_foreign_key "friendships", "users", column: "friend_id"
